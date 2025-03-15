@@ -4,4 +4,9 @@
 .turbo/
 build/
 node_modules/
+.vercel/
 .DS_Store
+.vercel
+
+# Turborepo
+.turbo

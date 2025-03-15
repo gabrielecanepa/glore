@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 R="\033[0;31m"
 

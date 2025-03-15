@@ -10,7 +10,7 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "build/**"],
+      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"],
       "env": [
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",

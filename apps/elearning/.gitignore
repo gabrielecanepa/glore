@@ -6,9 +6,6 @@
 # Testing
 /coverage/
 
-# Production
-/build/
-
 # Typescript
 *.tsbuildinfo
 
@@ -27,6 +24,3 @@ next-env.d.ts
 
 # Supabase
 /supabase/
-
-# Generated files
-/codegen/

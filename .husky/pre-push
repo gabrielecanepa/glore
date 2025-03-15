@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 commit="$(cat "$(git rev-parse --show-toplevel)"/.git/COMMIT_EDITMSG)"
 
