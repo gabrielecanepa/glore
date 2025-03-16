@@ -1,13 +1,8 @@
 {
   "name": "elearning",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "type": "module",
   "prettier": "@repo/prettier-config/tailwindcss",
-  "postcss": {
-    "plugins": {
-      "@tailwindcss/postcss": {}
-    }
-  },
   "scripts": {
     "prepare": "sh bin/prepare",
     "dev": "rm -rf .next && next dev --turbopack",
@@ -58,9 +53,11 @@
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
     "@tailwindcss/postcss": "^4.0.14",
+    "@types/loader-utils": "^2.0.6",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "eslint": "catalog:",
+    "loader-utils": "^3.3.1",
     "postcss": "^8.5.3",
     "prettier": "catalog:",
     "prettier-plugin-tailwindcss": "^0.6.11",
@@ -69,6 +66,12 @@
     "tailwind-scrollbar": "^4.0.1",
     "tailwindcss": "^4.0.14",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "webpack": "^5.98.0"
+  },
+  "postcss": {
+    "plugins": {
+      "@tailwindcss/postcss": {}
+    }
   }
 }

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0 (2025-03-16)
+
+* build: hash css class names in production ([21f9a70](https://github.com/joint-it/glore/commit/21f9a70))
+* build(deps): upgrade dependencies ([66bf847](https://github.com/joint-it/glore/commit/66bf847))
+* ci: add permissions to `code-quality` workflow ([b6fc9e5](https://github.com/joint-it/glore/commit/b6fc9e5))
+* ci: set up deployment workflow ([33fbb83](https://github.com/joint-it/glore/commit/33fbb83))
+* feat: add dashboard layout and pages ([b2f4cfb](https://github.com/joint-it/glore/commit/b2f4cfb))
+* feat: add error pages ([3ba27a0](https://github.com/joint-it/glore/commit/3ba27a0))
+* feat: add user menu ([eba086c](https://github.com/joint-it/glore/commit/eba086c))
+* docs: update readme badges ([370ac3e](https://github.com/joint-it/glore/commit/370ac3e))
+* fix: code scanning alert no. 2 for incomplete string escaping or encoding ([c45d861](https://github.com/joint-it/glore/commit/c45d861))
+* style: refactoring ([7b37cd4](https://github.com/joint-it/glore/commit/7b37cd4))
+
 ## <small>0.0.2 (2025-02-26)</small>
 
 * build: upgrade `pnpm` to 10.5.0 ([d5b6ffa](https://github.com/joint-it/glore/commit/d5b6ffa))
