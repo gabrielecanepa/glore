@@ -1,16 +1,21 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalEnv": ["ANALYZE", "NODE_ENV"],
+  "globalDependencies": ["tsconfig.json"],
+  "globalEnv": ["ANALYZE", "GITHUB_TOKEN", "NODE_ENV"],
   "tasks": {
     "dev": {
       "cache": false,
       "interactive": true,
       "persistent": true
     },
+    "typegen": {
+      "dependsOn": ["^typegen"],
+      "outputs": ["supabase/**/*.ts"]
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "build/**"],
+      "outputs": [".vercel/output/**", "build/**"],
       "env": [
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
@@ -19,11 +24,17 @@
         "POSTGRES_URL_NON_POOLING",
         "POSTGRES_URL",
         "POSTGRES_USER",
+        "SUPABASE_ACCESS_TOKEN",
         "SUPABASE_ANON_KEY",
         "SUPABASE_JWT_SECRET",
+        "SUPABASE_PROJECT_ID",
         "SUPABASE_SERVICE_ROLE_KEY",
         "SUPABASE_URL"
       ]
+    },
+    "elearning#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
     },
     "build:watch": {
       "cache": false,
@@ -34,16 +45,12 @@
     "start": {
       "dependsOn": ["^start"]
     },
-    "typegen": {
-      "dependsOn": ["^typegen"],
-      "outputs": ["supabase/**"],
-      "env": ["SUPABASE_URL"]
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": ["coverage/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]
-    },
-    "test": {
-      "dependsOn": ["^test"]
     },
     "lint": {
       "dependsOn": ["^lint"]

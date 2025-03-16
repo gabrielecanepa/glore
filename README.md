@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/static/glore.png" alt="" width="90">
+  <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/assets/glore.png" alt="" width="90">
   <h1>GloRe Certificate</h1>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
@@ -10,7 +10,7 @@
 
 GloRe is an official certificate that verifies volunteering activities.
 
-Visit [the website](https://glorecertificate.net) to find out how to sign up to the [e-learning platform](https://elearning.glorecertificate.net) and get the certificate recognizing your soft skills.
+Visit our website to find out how to sign up to the [e-learning platform](https://elearning.glorecertificate.net) and get the certificate recognizing your soft skills.
 
 ## About
 
@@ -24,7 +24,7 @@ The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href=
 
 You must download and activate the Node.js version specified [here](https://github.com/gabrielecanepa/glore/blob/main/.node-version).
 
-### Installation
+### Setup
 
 Download the project using the GitHub client or Git:
 
@@ -34,6 +34,19 @@ gh repo clone gabrielecanepa/glore
 git clone https://github.com/gabrielecanepa/glore.git
 ```
 
+Switch to the project directory and copy the the example environment file to `.env`:
+
+```sh
+cd apps/elearning
+cp .env.example .env
+```
+
+Fill in the required environment variables to gain access to the services used by the application.
+
+Repeat the same step with the public variables found in the `apps/elearning` directory.
+
+### Running the application
+
 Navigate to the project directory, activate pnpm using Corepack and install the project dependencies:
 
 ```sh
@@ -42,19 +55,6 @@ corepack enable
 corepack install
 pnpm install
 ```
-
-### Environment Setup
-
-Switch to the project directory and copy the `.env.example` file to `.env`:
-
-```sh
-cd apps/elearning
-cp .env.example .env
-```
-
-Fill in the required environment variables to gain access to all the services used by the application.
-
-### Running a Development Server
 
 Run a development server with:
 
@@ -76,9 +76,9 @@ Once you are done with your changes, push the branch to the repository and creat
 
 ## Releases
 
-To release new versions of the project, you must copy the `.env.example` file at the root of the project to `.env` and specify the `GITHUB_TOKEN` environment variable.
+To release new versions of the project, you must soecify a `GITHUB_TOKEN` environment variable at the root of the project. This token must have access to the repository and workflow scopes.
 
-Then, run the following command to create a new release using [release-it](https://github.com/release-it/release-it):
+Then, run the following command to create a new interactive release:
 
 ```sh
 pnpm release

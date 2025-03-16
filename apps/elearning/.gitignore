@@ -6,9 +6,6 @@
 # Testing
 /coverage/
 
-# Production
-/build/
-
 # Typescript
 *.tsbuildinfo
 
@@ -22,11 +19,5 @@
 /out/
 next-env.d.ts
 
-# Vercel
-/.vercel/
-
 # Supabase
 /supabase/
-
-# Generated files
-/codegen/

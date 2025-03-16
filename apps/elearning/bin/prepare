@@ -1,7 +1,9 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 R="\033[0;31m"
+root=$(git rev-parse --show-toplevel)
 
+[ -f "$root/.env" ] && . "$root/.env"
 [ -f .env ] && . .env
 
 if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
@@ -11,4 +13,4 @@ fi
 
 pnpm dlx supabase login --token "$SUPABASE_ACCESS_TOKEN" >/dev/null
 pnpm dlx supabase init --force --with-intellij-settings=false --with-vscode-settings=false
-pnpm typegen
+pnpm run typegen

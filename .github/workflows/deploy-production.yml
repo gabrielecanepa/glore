@@ -1,0 +1,47 @@
+name: Deploy Production
+permissions:
+  contents: read
+  checks: write
+  deployments: write
+  statuses: write
+env:
+  NEXT_TELEMETRY_DISABLED: true
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+  SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  push:
+    tags:
+      - v*
+      - v*.*
+      - v*.*.*
+
+jobs:
+  deploy-production:
+    name: Deploy Production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: production
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Install Corepack
+        run: |
+          npm install -g corepack@latest
+          echo ./node_modules/.bin >> $GITHUB_PATH
+          corepack enable
+          corepack install
+      - name: Install and build dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build:packages
+      - name: Deploy production
+        run: |
+          vercel pull --yes --prod --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

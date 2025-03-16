@@ -428,6 +428,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
         files: configFiles,
         rules: {
           'no-restricted-imports': RuleSeverity.Off,
+          'no-template-curly-in-string': RuleSeverity.Off,
           'import/newline-after-import': RuleSeverity.Off,
           'import/no-anonymous-default-export': RuleSeverity.Off,
           'sort-array-values/sort-array-values': RuleSeverity.Off,

@@ -7,29 +7,30 @@
     "url": "git+https://github.com/joint-it/glore.git"
   },
   "type": "module",
-  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6",
   "private": true,
+  "packageManager": "pnpm@10.6.3",
   "prettier": "@repo/prettier-config",
   "scripts": {
     "prepare": "husky",
     "dev": "turbo dev",
+    "typegen": "turbo typegen",
     "build": "turbo build",
     "build:packages": "turbo build --filter=./packages/*",
-    "build:watch": "turbo build:watch --filter=./packages/*",
+    "build:watch": "turbo build:watch",
+    "build:watch:packages": "turbo build:watch --filter=./packages/*",
     "start": "turbo start",
-    "typegen": "turbo typegen",
-    "typecheck": "pnpm root#typecheck && turbo typecheck",
     "test": "turbo test",
+    "typecheck": "pnpm root#typecheck && turbo typecheck",
     "lint": "pnpm root#lint && turbo lint",
     "lint:fix": "pnpm root#lint:fix && turbo lint:fix",
     "check": "pnpm root#check && turbo check",
     "check:fix": "pnpm root#check:fix && turbo check:fix",
+    "release": "dotenv release-it --",
     "root#typecheck": "tsc --noEmit",
-    "root#lint": "eslint . && prettier --check . && shellcheck .husky/commit-msg .husky/pre-push",
+    "root#lint": "eslint . && prettier --check . && shellcheck $(find .husky -maxdepth 1 -type f)",
     "root#lint:fix": "eslint --fix . && prettier --write .",
     "root#check": "pnpm root#typecheck && pnpm root#lint",
-    "root#check:fix": "pnpm root#typecheck && pnpm root#lint:fix",
-    "release": "dotenv release-it --"
+    "root#check:fix": "pnpm root#typecheck && pnpm root#lint:fix"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
@@ -48,42 +49,7 @@
     "release-it": "^18.1.2",
     "shellcheck": "catalog:",
     "turbo": "^2.4.4",
-    "typescript": "catalog:"
-  },
-  "release-it": {
-    "hooks": {
-      "after:init": "pnpm build && pnpm check"
-    },
-    "git": {
-      "push": true,
-      "commitMessage": "chore: release v${version}",
-      "pushArgs": [
-        "--follow-tags",
-        "--no-verify"
-      ],
-      "tagName": "v${version}"
-    },
-    "github": {
-      "release": true,
-      "releaseName": "v${version}",
-      "autoGenerate": true
-    },
-    "npm": {
-      "publish": false
-    },
-    "plugins": {
-      "@release-it/bumper": {
-        "out": [
-          "apps/*/package.json"
-        ]
-      },
-      "@release-it/conventional-changelog": {
-        "preset": {
-          "name": "conventionalcommits"
-        },
-        "header": "# Changelog",
-        "infile": "CHANGELOG.md"
-      }
-    }
+    "typescript": "catalog:",
+    "vercel": "^41.4.1"
   }
 }

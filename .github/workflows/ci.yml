@@ -1,7 +1,13 @@
 name: CI
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
+env:
+  SHELLCHECKJS_LOGGER_LEVEL: warn
+  NEXT_TELEMETRY_DISABLED: true
+  TURBO_TELEMETRY_DISABLED: true
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+  SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
 
 on:
   push:
@@ -16,46 +22,27 @@ jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
-    env:
-      APP_PATH: ${{ vars.APP_PATH }}
-      NEXT_TELEMETRY_DISABLED: true
-      SHELLCHECKJS_LOGGER_LEVEL: warn
-      TURBO_TELEMETRY_DISABLED: true
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: ${{ github.workspace }}/$APP_PATH/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - name: Install corepack
+      - uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/${{ vars.APP_PATH }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+      - name: Install Corepack
         run: |
           npm install -g corepack@latest
+          echo ./node_modules/.bin >> $GITHUB_PATH
           corepack enable
           corepack install
-      - name: Install dependencies
+      - name: Install and build dependencies
         run: |
-          pnpm install --ignore-scripts
-          echo ./node_modules/.bin >> $GITHUB_PATH
-      - uses: supabase/setup-cli@v1
-        with:
-          version: latest
-      - name: Generate types
-        run: |
-          cd $APP_PATH
-          supabase login --token $SUPABASE_ACCESS_TOKEN
-          supabase init --with-intellij-settings=false --with-vscode-settings=false
-          supabase gen types typescript --project-id=$SUPABASE_PROJECT_ID --schema=$SUPABASE_SCHEMAS > supabase/$SUPABASE_TYPES
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
-          SUPABASE_SCHEMAS: ${{ vars.SUPABASE_SCHEMAS }}
-          SUPABASE_TYPES: ${{ vars.SUPABASE_TYPES }}
-      - run: pnpm build
+          pnpm install
+          pnpm build:packages
       - name: Run commitlint on push
         if: github.event_name == 'push'
         run: commitlint --last --verbose

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 commit=$(cat "$1")
 
@@ -9,5 +9,4 @@ case "$commit" in
     ;;
 esac
 
-# Run commitlint
 commitlint --edit "$1"

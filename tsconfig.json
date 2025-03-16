@@ -1,6 +1,6 @@
 {
   "extends": "@repo/tsconfig",
-  "include": ["*.ts"],
+  "include": [".*.ts", "*.ts"],
   "exclude": ["apps", "node_modules", "packages"],
   "compilerOptions": {
     "noEmit": true

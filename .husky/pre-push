@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 commit="$(cat "$(git rev-parse --show-toplevel)"/.git/COMMIT_EDITMSG)"
 
@@ -8,14 +8,13 @@ if [ -n "$(git status -s)" ]; then
 fi
 
 commitlint --from origin/main --to HEAD --verbose
-pnpm typegen
-pnpm build
-pnpm check:fix
+pnpm run typegen
+pnpm run build
+pnpm run check:fix
 
-# Commit the fixes if any
-if [ -n "$(git status -s)" ]; then 
-  git reset --soft HEAD^
-  git add .
-  git commit -m "$commit"
-fi
+# Commit eventual fixes
+[ -z "$(git status -s)" ] && exit 0
+git reset --soft HEAD^
+git add .
+git commit -m "$commit" --no-verif
 

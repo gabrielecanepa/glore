@@ -2,6 +2,8 @@
 
 .private/
 .turbo/
+.vercel/
 build/
 node_modules/
+supabase/
 .DS_Store

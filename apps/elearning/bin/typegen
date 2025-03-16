@@ -1,19 +1,19 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
 R="\033[0;31m"
+root=$(git rev-parse --show-toplevel)
 
 SUPABASE_SCHEMAS=auth,public
-SUPABASE_TYPES_PATH=supabase/types.ts
+SUPABASE_TYPES=supabase/types.ts
 
+[ -f "$root/.env" ] && . "$root/.env"
 [ -f .env ] && . .env
 
-if [ -z "$SUPABASE_URL" ] && [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
-  echo "${R}Error: SUPABASE_URL must be set"
+if [ -z "$SUPABASE_PROJECT_ID" ]; then
+  echo "${R}Error: SUPABASE_PROJECT_ID must be set"
   exit 1
 fi
 
-supabase_url=${SUPABASE_URL:-$NEXT_PUBLIC_SUPABASE_URL}
-supabase_project_id=$(echo "$supabase_url" | sed -E 's/https:\/\/([^.]+).*/\1/')
-
-pnpm dlx supabase gen types typescript --project-id="$supabase_project_id" --schema="$SUPABASE_SCHEMAS" > "$SUPABASE_TYPES_PATH"
-echo "Finished types generation."
+if pnpm dlx supabase gen types typescript --project-id="$SUPABASE_PROJECT_ID" --schema=$SUPABASE_SCHEMAS > $SUPABASE_TYPES; then
+  echo "Finished types generation."
+fi
