@@ -42,8 +42,8 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@commitlint/types": "^19.8.0",
-    "@release-it/bumper": "^7.0.2",
-    "@release-it/conventional-changelog": "8.0.2",
+    "@release-it/bumper": "^7.0.5",
+    "@release-it/conventional-changelog": "10.0.1",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
     "@repo/release-it-config": "workspace:^",
@@ -55,8 +55,8 @@
     "prettier": "catalog:",
     "release-it": "catalog:",
     "shellcheck": "catalog:",
-    "turbo": "^2.5.0",
+    "turbo": "^2.5.2",
     "typescript": "catalog:",
-    "vercel": "^41.6.0"
+    "vercel": "^41.7.0"
   }
 }
