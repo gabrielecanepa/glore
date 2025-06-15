@@ -20,7 +20,7 @@
     "check": "pnpm type-check && pnpm lint"
   },
   "dependencies": {
-    "@eslint/js": "^9.28.0",
+    "@eslint/js": "^9.29.0",
     "@next/eslint-plugin-next": "^15.3.3",
     "@stylistic/eslint-plugin": "^4.4.1",
     "eslint-config-flat-gitignore": "^2.1.0",
@@ -37,8 +37,8 @@
     "eslint-plugin-sort-array-values": "^0.1.0",
     "eslint-plugin-sort-destructure-keys": "^2.0.0",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "tailwindcss": "^4.1.8",
-    "typescript-eslint": "^8.33.1"
+    "tailwindcss": "^4.1.10",
+    "typescript-eslint": "^8.34.0"
   },
   "devDependencies": {
     "@repo/prettier-config": "workspace:^",
