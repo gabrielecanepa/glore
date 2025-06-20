@@ -54,7 +54,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.3.3",
+    "@next/bundle-analyzer": "^15.3.4",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
@@ -65,9 +65,9 @@
     "eslint": "catalog:",
     "postcss": "^8.5.6",
     "prettier": "catalog:",
-    "prettier-plugin-tailwindcss": "^0.6.12",
+    "prettier-plugin-tailwindcss": "^0.6.13",
     "react-scan": "^0.3.4",
-    "shadcn": "^2.6.4",
+    "shadcn": "^2.7.0",
     "shellcheck": "catalog:",
     "supabase": "^2.26.9",
     "tailwindcss": "^4.1.10",
