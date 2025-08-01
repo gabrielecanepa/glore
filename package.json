@@ -36,20 +36,20 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/types": "^19.8.1",
     "@release-it/bumper": "^7.0.5",
-    "@release-it/conventional-changelog": "=8.0.0",
+    "@release-it/conventional-changelog": "=10.0.1",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
     "@types/node": "catalog:",
-    "dotenv-cli": "^8.0.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "catalog:",
     "husky": "^9.1.7",
     "prettier": "catalog:",
-    "release-it": "^19.0.3",
+    "release-it": "^19.0.4",
     "release-it-pnpm": "^4.6.6",
     "shellcheck": "catalog:",
-    "turbo": "^2.5.4",
+    "turbo": "^2.5.5",
     "typescript": "catalog:",
-    "vercel": "^44.4.1"
+    "vercel": "^44.6.6"
   }
 }
