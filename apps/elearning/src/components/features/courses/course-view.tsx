@@ -139,7 +139,7 @@ export const CourseView = (props: { course?: Course }) => {
       updateCourse(course => ({
         ...course,
         lessons: course.lessons?.map((s, i) => (i === index ? { ...s, completed: true } : s)),
-        status: isLastLesson ? 'completed' : course.userStatus,
+        userStatus: isLastLesson ? 'completed' : course.userStatus,
         completed: isLastLesson,
       }))
 

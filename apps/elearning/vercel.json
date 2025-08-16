@@ -1,5 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "crons": [
+    {
+      "path": "/api/health",
+      "schedule": "0 */4 * * *"
+    }
+  ],
   "trailingSlash": false
 }

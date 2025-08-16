@@ -33,10 +33,10 @@ export const findUserByUsername = async (db: DatabaseClient, username: string) =
   return parseUser(data)
 }
 
-export * from './types'
-
 export default {
   getCurrent: getCurrentUser,
   find: findUser,
   findByUsername: findUserByUsername,
 }
+
+export * from './types'

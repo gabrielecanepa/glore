@@ -19,8 +19,8 @@ export const findOrganization = async (db: DatabaseClient, id: number): Promise<
   return data as Organization
 }
 
-export * from './types'
-
 export default {
   find: findOrganization,
 }
+
+export * from './types'

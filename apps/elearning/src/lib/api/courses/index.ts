@@ -107,8 +107,6 @@ export const submitAssessment = async (db: DatabaseClient, id: number, value: nu
   return serialize(data)
 }
 
-export * from './types'
-
 export default {
   list: listCourses,
   find: findCourse,
@@ -118,3 +116,5 @@ export default {
   submitEvaluations,
   submitAssessment,
 }
+
+export * from './types'

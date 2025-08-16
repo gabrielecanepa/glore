@@ -6,17 +6,11 @@ cmd=$1
 
 case $cmd in
   format)
-    ./node_modules/.bin/prettier --write $CHANGELOG
-
-    if [ -n "$(git status --porcelain $CHANGELOG)" ]; then
-      git add $CHANGELOG
-    fi
+    prettier --write $CHANGELOG
+    [ -n "$(git status --porcelain $CHANGELOG)" ] && git add $CHANGELOG
     ;;
   validate)
-    if [ -z "$(git log "@{u}..")" ] || [ "$SKIP_CI" = 0 ]; then
-      exit 0
-    fi
-    
+    [ -z "$(git log "@{u}..")" ] || [ "$SKIP_CI" = 0 ] && exit 0
     pnpm run build && pnpm run check
     ;;  
 esac

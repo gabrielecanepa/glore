@@ -4,10 +4,11 @@ import { handleize } from '@repo/utils/handleize'
 import { pick } from '@repo/utils/pick'
 import { pickRandom } from '@repo/utils/random'
 
-import { client } from 'supabase/seeds/config'
-import { skill } from 'supabase/seeds/data'
-import { pickLocales, randomLocales, verifyResponse } from 'supabase/seeds/utils'
 import { type Tables } from 'supabase/types'
+
+import { client } from './config/client'
+import { skill } from './config/data'
+import { pickLocales, randomLocales, verifyResponse } from './config/utils'
 
 const CREATOR_ROLES = ['admin', 'editor']
 

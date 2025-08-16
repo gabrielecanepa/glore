@@ -4,13 +4,12 @@ import { log } from '@repo/utils/logger'
 import { pluralize } from '@repo/utils/pluralize'
 import { pickRandom, randomRange } from '@repo/utils/random'
 
-import { pg } from 'supabase/seeds/config'
-import { locales, user } from 'supabase/seeds/data'
 import { type Database, type Enums } from 'supabase/types'
 
-type PublicTable = keyof Database['public']['Tables']
+import { pg } from './client'
+import { locales, user } from './data'
 
-export const supaEnv = (key: string) => process.env[`SUPABASE_${key}`] || process.env[`NEXT_PUBLIC_SUPABASE_${key}`]
+type PublicTable = keyof Database['public']['Tables']
 
 export const resetDatabase = async () => {
   const publicTables = (

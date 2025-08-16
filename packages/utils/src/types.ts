@@ -123,19 +123,6 @@ export interface Recursive<T> {
 }
 
 /**
- * Capitalizes the first letter of a string and converts the rest to lowercase.
- *
- * @example
- * ```ts
- * type Capitalized = Capitalize<'hello world'> // 'Hello world'
- * type Capitalized = Capitalize<'HELLO WORLD'> // 'Hello world'
- * ```
- */
-export type Capitalize<S extends string> = S extends `${infer First}${infer Rest}`
-  ? `${Uppercase<First>}${Lowercase<Rest>}`
-  : S
-
-/**
  * Record with keys converted from snake to camel case.
  *
  * @example

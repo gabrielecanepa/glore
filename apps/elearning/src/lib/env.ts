@@ -4,7 +4,7 @@ import { isServer } from '@repo/utils/is-server'
 const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY!
 const OPENAI_MODEL = env('OPENAI_MODEL', 'gpt-4o')
 
 if (!STORAGE_URL || !SUPABASE_ANON_KEY || !SUPABASE_URL || (isServer() && !OPENAI_API_KEY))
@@ -26,6 +26,6 @@ export const Env = Object.freeze({
   STORAGE_URL,
   SUPABASE_ANON_KEY,
   SUPABASE_URL,
-  OPENAI_API_KEY: OPENAI_API_KEY!,
+  OPENAI_API_KEY,
   OPENAI_MODEL,
 })

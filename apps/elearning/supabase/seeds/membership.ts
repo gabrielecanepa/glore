@@ -1,9 +1,10 @@
 import { type User } from '@supabase/supabase-js'
 
-import { client } from 'supabase/seeds/config'
-import { organization as seeder } from 'supabase/seeds/data'
-import { emailToRole, verifyResponse } from 'supabase/seeds/utils'
 import { type Enums, type Tables } from 'supabase/types'
+
+import { client } from './config/client'
+import { organization as seeder } from './config/data'
+import { emailToRole, verifyResponse } from './config/utils'
 
 export const seedMemberships = async (organization: Tables<'organizations'>, users: User[]) => {
   const response = await client

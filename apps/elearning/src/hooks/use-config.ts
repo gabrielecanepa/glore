@@ -2,14 +2,16 @@
 
 import { useMemo } from 'react'
 
-import { minSkillRating, minSkills } from 'config/app.json'
+import config from 'config/app.json'
 
+/**
+ * Hook exposing the application configuration.
+ */
 export const useConfig = () =>
   useMemo(
     () =>
       ({
-        minSkills,
-        minSkillRating,
+        ...config,
       }) as const,
     [],
   )

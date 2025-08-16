@@ -13,7 +13,8 @@ import { type createApi } from './server'
 export type Api = ReturnType<typeof createApi>
 
 /**
- * Entity from the database with camelized keys and optional foreign keys and timestamps.
+ * Entity from the database with keys tranformed to camel case
+ * and optional foreign keys and timestamps.
  */
 export type Entity<
   T extends TableName,

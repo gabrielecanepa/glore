@@ -12,7 +12,7 @@ TYPES_PATH=supabase/types.ts
 [ -f .env ] && . .env
 
 if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_URL" ]; then
-  echo "Error: SUPABASE_DB_URL is not set"
+  echo "Error: SUPABASE_ACCESS_TOKEN and SUPABASE_DB_URL must be set"
   exit 1
 fi
 
@@ -80,7 +80,7 @@ sync_db() {
 }
 
 run_seeds() {
-  tsx supabase/seeds/cli.ts
+  tsx supabase/scripts/seed.ts
 }
 
 dump_db() {

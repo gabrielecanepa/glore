@@ -22,9 +22,9 @@ export const listCertificates = async (db: DatabaseClient) => {
   return data.map(parseCertificate)
 }
 
-export * from './types'
-
 export default {
   find: findCertificate,
   list: listCertificates,
 }
+
+export * from './types'

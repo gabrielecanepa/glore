@@ -61,7 +61,7 @@ const configs = {
 const eslintConfig = async <Rules extends Linter.RulesRecord>(
   options?: ConfigOptions,
   ...userConfig: Linter.Config<Rules>[]
-): Promise<Linter.Config<Rules>[]> => {
+) => {
   const {
     allowRelativeImports = 'siblings',
     bottomImports,

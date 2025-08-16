@@ -1,10 +1,10 @@
 import { log } from '@repo/utils/logger'
 
-import { seedMemberships } from 'supabase/seeds/models/membership'
-import { seedOrganizations } from 'supabase/seeds/models/organization'
-import { seedSkills } from 'supabase/seeds/models/skill'
-import { seedUsers } from 'supabase/seeds/models/user'
-import { createIncludes, logEntities, resetDatabase } from 'supabase/seeds/utils'
+import { createIncludes, logEntities, resetDatabase } from 'supabase/seeds/config/utils'
+import { seedMemberships } from 'supabase/seeds/membership'
+import { seedOrganizations } from 'supabase/seeds/organization'
+import { seedSkills } from 'supabase/seeds/skill'
+import { seedUsers } from 'supabase/seeds/user'
 
 const args = process.argv.slice(2)
 const reset = !args.includes('--skip-reset')

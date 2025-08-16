@@ -2,9 +2,9 @@ import { faker } from '@faker-js/faker'
 
 import { pickRandom, randomRange } from '@repo/utils/random'
 
-import { client } from 'supabase/seeds/config'
-import { countries, languages, user } from 'supabase/seeds/data'
-import { randomUserDetails, verifyResponse } from 'supabase/seeds/utils'
+import { client } from './config/client'
+import { countries, languages, user } from './config/data'
+import { randomUserDetails, verifyResponse } from './config/utils'
 
 const { avatar, domain } = user
 

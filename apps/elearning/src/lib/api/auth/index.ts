@@ -34,9 +34,9 @@ export const logout = async (db: DatabaseClient) => {
   return true
 }
 
-export * from './types'
-
 export default {
   login,
   logout,
 }
+
+export * from './types'
