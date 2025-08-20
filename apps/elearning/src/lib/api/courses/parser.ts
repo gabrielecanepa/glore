@@ -3,8 +3,8 @@ import { parseUser } from '@/lib/api/users/parser'
 import { createParser } from '@/lib/api/utils'
 import { LOCALE_ITEMS } from '@/lib/i18n/config'
 
-import { type courseQuery, type lessonQuery, type skillQuery } from './queries'
-import { CourseStatus, CourseType, LessonType, type Course, type Lesson, type Skill } from './types'
+import { type courseQuery, type lessonQuery } from './queries'
+import { CourseStatus, LessonType, type Course, type Lesson } from './types'
 
 const parseCourseStatus = ({
   archivedAt,
@@ -17,9 +17,7 @@ const parseCourseStatus = ({
 }
 
 export const parseCourse = createParser<'courses', typeof courseQuery, Course>(course => {
-  const { creator: courseCreator, lessons: courseLessons, skill: courseSkill, user_courses, ...rest } = course
-  const skill = courseSkill ? parseSkill(courseSkill) : undefined
-  const type = course.skill ? CourseType.Skill : CourseType.Introduction
+  const { creator: courseCreator, lessons: courseLessons, user_courses, ...rest } = course
   const status = parseCourseStatus(course)
   const lessons = courseLessons.map(parseLesson)
   const enrolled = user_courses.length > 0
@@ -43,28 +41,17 @@ export const parseCourse = createParser<'courses', typeof courseQuery, Course>(c
 
   return {
     ...rest,
-    skill,
-    type,
     status,
-    creator,
     lessons,
-    contributions,
-    contributors,
     enrolled,
     completion,
     progress,
     completed,
+    creator,
+    contributions,
+    contributors,
   } as Course
 })
-
-export const parseSkill = createParser<'skills', typeof skillQuery, Skill>(
-  ({ group, user_assessments, ...skill }) =>
-    ({
-      ...skill,
-      group: group ?? undefined,
-      userRating: user_assessments[0]?.value,
-    }) as Skill,
-)
 
 export const parseLesson = createParser<'lessons', typeof lessonQuery, Lesson>(({ user_lessons, ...lesson }) => {
   const questions = lesson.questions.map(({ options, ...question }) => ({

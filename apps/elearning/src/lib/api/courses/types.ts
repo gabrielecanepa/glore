@@ -2,11 +2,9 @@ import { type Enum } from '@repo/utils/types'
 
 import type { Entity, Timestamp } from '@/lib/api/types'
 import { type User } from '@/lib/api/users/types'
+import { type Enums } from 'supabase/types'
 
-export enum CourseType {
-  Introduction = 'introduction',
-  Skill = 'skill',
-}
+export interface SkillGroup extends Entity<'skill_groups'> {}
 
 export enum CourseStatus {
   Draft = 'draft',
@@ -22,24 +20,17 @@ export enum CourseProgress {
 }
 
 export interface Course extends Entity<'courses', 'title' | 'description', Timestamp> {
-  skill?: Skill
-  type: CourseType
+  type: Enums<'course_type'>
+  skillGroup: SkillGroup
+  creator: User
+  contributions: LessonContribution[]
+  contributors: User[] & { count?: number }
   status: Enum<CourseStatus>
   lessons: Lesson[]
   enrolled: boolean
   completion: number
   progress: Enum<CourseProgress>
   completed: boolean
-  creator: User
-  contributions: LessonContribution[]
-  contributors: User[] & { count?: number }
-}
-
-export interface SkillGroup extends Entity<'skill_groups'> {}
-
-export interface Skill extends Entity<'skills', 'name' | 'description', Timestamp> {
-  group?: SkillGroup
-  userRating?: number
 }
 
 export enum LessonType {

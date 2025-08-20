@@ -94,8 +94,8 @@ export const submitAssessment = async (db: DatabaseClient, id: number, value: nu
   const { data, error } = await db
     .from('user_assessments')
     .insert({
-      user_id: user.id,
       assessment_id: id,
+      user_id: user.id,
       value,
     })
     .select('id, value')

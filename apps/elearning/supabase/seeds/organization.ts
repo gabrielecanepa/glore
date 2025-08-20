@@ -19,5 +19,6 @@ export const seedOrganizations = async () => {
     })
     .select()
   verifyResponse(response, 'memberships')
+
   return response.data!
 }

@@ -159,11 +159,7 @@ const CourseListSort = ({
                 <span className={cn('text-foreground/90', value === option && 'text-foreground')}>{label}</span>
                 {value === option && (
                   <Button
-                    className={`
-                      size-6 bg-card transition-all duration-75
-                      hover:bg-card hover:shadow-none
-                      active:bg-card/50
-                    `}
+                    className="size-6 bg-card transition-all duration-75 hover:bg-card hover:shadow-none active:bg-card/50"
                     size="icon"
                   >
                     {direction === 'asc' ? <ArrowUpIcon className="size-3" /> : <ArrowDownIcon className="size-3" />}

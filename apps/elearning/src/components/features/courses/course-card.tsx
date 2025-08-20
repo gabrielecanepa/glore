@@ -266,9 +266,9 @@ export const CourseCard = ({
                 </Link>
                 {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
               </div>
-              {course.skill?.group && (
+              {course.skillGroup && (
                 <span className="text-xs font-medium text-muted-foreground">
-                  {translate(course.skill.group.name as IntlRecord)}
+                  {translate(course.skillGroup.name as IntlRecord)}
                 </span>
               )}
             </div>
@@ -388,11 +388,7 @@ export const CourseCard = ({
                 {course.contributors.map(user => (
                   <HoverCard closeDelay={50} key={user.id} openDelay={300}>
                     <HoverCardTrigger asChild>
-                      <Avatar
-                        className={`
-                          size-3.5 rounded-full ring-2 ring-background transition-all duration-200 ease-in-out
-                        `}
-                      >
+                      <Avatar className="size-3.5 rounded-full ring-2 ring-background transition-all duration-200 ease-in-out">
                         {user.avatarUrl && <AvatarImage className="rounded-full" src={user.avatarUrl} />}
                         <AvatarFallback className="text-xs">{user.initials}</AvatarFallback>
                       </Avatar>

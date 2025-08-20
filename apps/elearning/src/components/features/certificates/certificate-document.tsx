@@ -1,18 +1,8 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import {
-  Award,
-  Building,
-  CalendarIcon,
-  Clock,
-  PrinterIcon,
-  ShareIcon,
-  StarIcon,
-  UserIcon,
-  ViewIcon,
-} from 'lucide-react'
+import { Award, Building, CalendarIcon, Clock, PrinterIcon, ShareIcon, UserIcon, ViewIcon } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -23,7 +13,6 @@ import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Certificate } from '@/lib/api/certificates/types'
-import { cn } from '@/lib/utils'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()
@@ -32,19 +21,19 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
 
   const isIssued = useMemo(() => !!certificate.issuedAt, [certificate])
 
-  const renderStarRating = useCallback(
-    (rating: number) => (
-      <div className="flex items-center">
-        {[1, 2, 3, 4, 5].map(i => (
-          <StarIcon
-            className={cn('size-5', i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300')}
-            key={i}
-          />
-        ))}
-      </div>
-    ),
-    [],
-  )
+  // const renderStarRating = useCallback(
+  //   (rating: number) => (
+  //     <div className="flex items-center">
+  //       {[1, 2, 3, 4, 5].map(i => (
+  //         <StarIcon
+  //           className={cn('size-5', i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300')}
+  //           key={i}
+  //         />
+  //       ))}
+  //     </div>
+  //   ),
+  //   [],
+  // )
 
   return (
     <Card className="mx-auto max-w-4xl">
@@ -163,7 +152,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             {certificate.skills.map(skill => (
               <Badge className="px-3 py-1" key={skill.id}>
                 <Award className="mr-1 size-3.5" />
-                {localize(skill.name)} {skill.userRating && renderStarRating(skill.userRating)}
+                {localize(skill.title)}
               </Badge>
             ))}
           </div>

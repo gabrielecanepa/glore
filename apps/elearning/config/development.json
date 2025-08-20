@@ -80,7 +80,7 @@
       "address": "Via Giovanola 25C",
       "memberships": ["representative", "tutor", "volunteer"]
     },
-    "skill": {
+    "course": {
       "groups": [
         {
           "name": { "en": "Work", "es": "Trabajo", "it": "Lavoro" },

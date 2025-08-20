@@ -1,4 +1,4 @@
-import { skillQuery } from '@/lib/api/courses/queries'
+import { courseQuery } from '@/lib/api/courses/queries'
 import { organizationQuery } from '@/lib/api/organizations/queries'
 import { baseUserQuery } from '@/lib/api/users/queries'
 import { timestamps } from '@/lib/api/utils'
@@ -17,8 +17,8 @@ export const certificateQuery = `
   documentUrl:document_url,
   issuedAt:issued_at,
   ${timestamps},
-  skills (
-    ${skillQuery}
+  skills:courses (
+    ${courseQuery}
   ),
   organization:organizations (
     ${organizationQuery}

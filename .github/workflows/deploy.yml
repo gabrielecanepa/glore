@@ -136,4 +136,4 @@ jobs:
         working-directory: ${{ vars.APP_PATH }}
         run: |
           count=$(echo "${{ needs.sync-db.outputs.migrations }}" | wc -w)
-          pnpm db revert --count $count
+          pnpm db revert $count

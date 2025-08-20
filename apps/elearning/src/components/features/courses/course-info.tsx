@@ -16,11 +16,12 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
-import { CourseType, type Course } from '@/lib/api/courses/types'
+import { type Course } from '@/lib/api/courses/types'
 import { type Locale } from '@/lib/i18n/types'
+import { type Enums } from 'supabase/types'
 
 export interface CourseInfoData {
-  type: CourseType
+  type: Enums<'course_type'>
   title: string
   slug: string
   description: string
@@ -41,11 +42,11 @@ export const CourseInfo = ({ course, language, onChange }: CourseInfoProps) => {
   const t = useTranslations('Courses')
 
   const isExisting = useMemo(() => !!course.id, [course.id])
-  const isSoftSkill = useMemo(() => course.type === CourseType.Skill, [course.type])
+  const isSoftSkill = useMemo(() => course.type === 'skill', [course.type])
 
   const form = useForm<CourseInfoData>({
     defaultValues: {
-      type: course.type || CourseType.Introduction,
+      type: course.type || 'skill',
       title: localize(course.title, language) || '',
       slug: course.slug || '',
       description: localize(course.description, language) || '',
@@ -77,7 +78,7 @@ export const CourseInfo = ({ course, language, onChange }: CourseInfoProps) => {
 
   const handleTypeChange = useCallback(
     (checked: boolean) => {
-      form.setValue('type', checked ? CourseType.Skill : CourseType.Introduction)
+      form.setValue('type', checked ? 'skill' : 'intro')
     },
     [form],
   )
@@ -102,16 +103,14 @@ export const CourseInfo = ({ course, language, onChange }: CourseInfoProps) => {
                 <FormLabel>{t('courseType')}</FormLabel>
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
-                    <Switch checked={field.value === CourseType.Skill} onCheckedChange={handleTypeChange} />
+                    <Switch checked={field.value === 'skill'} onCheckedChange={handleTypeChange} />
                     <Label className="text-sm font-normal">
-                      {type === CourseType.Skill ? t('courseTypeSoftSkill') : t('courseTypeIntroductory')}
+                      {type === 'skill' ? t('courseTypeSoftSkill') : t('courseTypeIntroductory')}
                     </Label>
                   </div>
                 </div>
                 <FormDescription>
-                  {type === CourseType.Skill
-                    ? t('courseTypeSoftSkillDescription')
-                    : t('courseTypeIntroductoryDescription')}
+                  {type === 'skill' ? t('courseTypeSoftSkillDescription') : t('courseTypeIntroductoryDescription')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -173,12 +172,7 @@ export const CourseInfo = ({ course, language, onChange }: CourseInfoProps) => {
 
           {/* Soft Skill Notice */}
           {isSoftSkill && (
-            <div
-              className={`
-                flex space-x-2 rounded-md border border-blue-200 bg-blue-50 p-3
-                dark:border-blue-800 dark:bg-blue-950/30
-              `}
-            >
+            <div className="flex space-x-2 rounded-md border border-blue-200 bg-blue-50 p-3 dark:border-blue-800 dark:bg-blue-950/30">
               <InfoIcon className="size-4 shrink-0 text-blue-600 dark:text-blue-400" />
               <p className="text-sm text-blue-800 dark:text-blue-200">{t('softSkillNotice')}</p>
             </div>

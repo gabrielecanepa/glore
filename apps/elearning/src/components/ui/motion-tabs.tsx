@@ -165,8 +165,8 @@ export const MotionTabsTrigger = ({
       <motion.button
         className={cn(
           `
-            group/motion-tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md
-            border-2 border-transparent px-4 py-1 text-sm whitespace-nowrap text-muted-foreground select-none
+            group/motion-tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border-2
+            border-transparent px-4 py-1 text-sm whitespace-nowrap text-muted-foreground select-none
             data-[active=true]:pointer-events-none data-[active=true]:text-foreground
             dark:text-foreground dark:data-[active=true]:text-foreground
             [&_svg]:shrink-0

@@ -22,7 +22,7 @@ export const seedMemberships = async (organization: Tables<'organizations'>, use
       }),
     )
     .select()
-
   verifyResponse(response, 'memberships')
+
   return response.data!
 }

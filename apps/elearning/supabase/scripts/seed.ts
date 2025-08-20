@@ -1,9 +1,9 @@
 import { log } from '@repo/utils/logger'
 
 import { createIncludes, logEntities, resetDatabase } from 'supabase/seeds/config/utils'
+import { seedCourses } from 'supabase/seeds/course'
 import { seedMemberships } from 'supabase/seeds/membership'
 import { seedOrganizations } from 'supabase/seeds/organization'
-import { seedSkills } from 'supabase/seeds/skill'
 import { seedUsers } from 'supabase/seeds/user'
 
 const args = process.argv.slice(2)
@@ -31,9 +31,9 @@ void (async () => {
       }
     }
 
-    if (includes('skill')) {
-      const skills = await seedSkills({ users })
-      logEntities({ skills })
+    if (includes('courses')) {
+      const courses = await seedCourses({ users })
+      logEntities({ courses })
     }
 
     process.exit(0)

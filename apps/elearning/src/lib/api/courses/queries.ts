@@ -1,21 +1,6 @@
 import { userQuery } from '@/lib/api/users/queries'
 import { timestamps } from '@/lib/api/utils'
 
-export const skillQuery = `
-  id,
-  name,
-  description,
-  ${timestamps},
-  group:skill_groups (
-    id,
-    name
-  ),
-  user_assessments (
-    id,
-    value
-  )
-`
-
 export const lessonQuery = `
   id,
   title,
@@ -61,6 +46,7 @@ export const lessonQuery = `
 
 export const courseQuery = `
   id,
+  type,
   slug,
   title,
   description,
@@ -70,14 +56,15 @@ export const courseQuery = `
   sortOrder:sort_order,
   ${timestamps},
   archivedAt:archived_at,
-  user_courses(count),
-  skill:skills (
-    ${skillQuery}
+  skillGroup:skill_groups (
+    id,
+    name
+  ),
+  creator:users (
+    ${userQuery}
   ),
   lessons (
     ${lessonQuery}
   ),
-  creator:users (
-    ${userQuery}
-  )
+  user_courses(count)
 `

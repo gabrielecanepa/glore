@@ -2,7 +2,7 @@
 # shellcheck disable=SC2068
 
 PUBLIC_SCHEMA=public
-PROTECTED_SCHEMA=auth,storage
+PROTECTED_SCHEMA=auth
 SCHEMA=$PUBLIC_SCHEMA,$PROTECTED_SCHEMA
 
 MIGRATIONS_PATH=supabase/migrations
@@ -126,14 +126,14 @@ case $cmd in
     init_db
     ;;
   push)
-    if is_dev; then
-      printf "Are you sure you want to push the local config and update the remote schema? [y/N] "
-      read -r response
-      if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-        echo "Push cancelled."
-        exit 0
-      fi
-    fi
+    # if is_dev; then
+    #   printf "Are you sure you want to push the local config and update the remote schema? [y/N] "
+    #   read -r response
+    #   if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+    #     echo "Push cancelled."
+    #     exit 0
+    #   fi
+    # fi
     supabase config push --yes
     supabase db push --password "$SUPABASE_DB_PASSWORD" --include-all --yes
     ;;
@@ -147,7 +147,6 @@ case $cmd in
   revert)
     last=1
     location=local
-    [ -n "$2" ] && last=$2
     ! is_dev && location="linked"
     supabase migration down --$location --last "$last" --yes
     ;;

@@ -121,10 +121,7 @@ const SidebarOrgs = ({
               <>
                 <Avatar
                   className={cn(
-                    `
-                      flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted
-                      transition-all duration-150
-                    `,
+                    'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
                     !open && 'ml-8 size-8 text-xs',
                     !currentOrg.avatarUrl && 'border',
                   )}

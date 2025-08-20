@@ -7,23 +7,23 @@ import { pickRandom } from '@repo/utils/random'
 import { type Tables } from 'supabase/types'
 
 import { client } from './config/client'
-import { skill } from './config/data'
+import { course } from './config/data'
 import { pickLocales, randomLocales, verifyResponse } from './config/utils'
 
 const CREATOR_ROLES = ['admin', 'editor']
 
-export const seedSkills = async ({ users }: { users?: User[] }) => {
-  const skills: Tables<'skills'>[] = []
+export const seedCourses = async ({ users }: { users?: User[] }) => {
+  const courses: Tables<'courses'>[] = []
 
-  const groups = await client.from('skill_groups').insert(pick(skill.groups, 'name')).select()
+  const groups = await client.from('skill_groups').insert(pick(course.groups, 'name')).select()
   verifyResponse(groups, 'skill_groups')
 
-  for (const skillGroup of skill.groups) {
+  for (const skillGroup of course.groups) {
     // @ts-expect-error coherce json type
     const group = groups.data!.find(({ name }) => name.en === skillGroup.name.en)!
 
-    for (const course of skillGroup.courses) {
-      const slug = handleize(course.title.en)
+    for (const skillCourse of skillGroup.courses) {
+      const slug = handleize(skillCourse.title.en)
       const creator = users
         ? pickRandom(users.filter(user => CREATOR_ROLES.includes(user.email!.split('@')[0])))
         : undefined
@@ -31,38 +31,29 @@ export const seedSkills = async ({ users }: { users?: User[] }) => {
       const draftLocales = randomLocales().filter(locale => !publishedLocales.includes(locale))
       const courseLocales = [...new Set([...publishedLocales, ...draftLocales])]
 
-      const title = pickLocales(course.title, courseLocales)
-      const description = pickLocales(course.description, courseLocales)
+      const title = pickLocales(skillCourse.title, courseLocales)
+      const description = pickLocales(skillCourse.description, courseLocales)
 
-      const skill = await client
-        .from('skills')
-        .insert({
-          name: title,
-          description,
-          skill_group_id: group.id,
-        })
-        .select()
-      verifyResponse(skill, 'skills')
-
-      const skillCourse = await client
+      const newCourse = await client
         .from('courses')
         .insert({
+          type: 'skill',
           slug,
           title,
           description,
-          icon: course.icon,
+          icon: skillCourse.icon,
           published_locales: publishedLocales,
           draft_locales: draftLocales,
-          sort_order: skills.length + 1,
-          skill_id: skill.data![0].id,
+          sort_order: courses.length + 1,
+          skill_group_id: group.id,
           creator_id: creator?.id,
         })
         .select()
-      verifyResponse(skillCourse, 'courses')
+      verifyResponse(newCourse, 'courses')
 
-      skills.push(...skill.data!)
+      courses.push(...newCourse.data!)
     }
   }
 
-  return skills
+  return courses
 }
