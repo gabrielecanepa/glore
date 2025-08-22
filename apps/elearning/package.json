@@ -11,7 +11,7 @@
     "typegen": "sh scripts/db.sh typegen",
     "type-check": "sh scripts/type-check.sh",
     "lint": "sh scripts/lint.sh",
-    "format": "sh scripts/lint.sh --fix",
+    "lint:fix": "sh scripts/lint.sh --fix",
     "check": "pnpm type-check && pnpm lint",
     "analyze": "ANALYZE=true next build"
   },
