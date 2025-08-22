@@ -49,6 +49,11 @@ export default eslintConfig(
         message: 'Import from the components folder instead.',
       },
     ],
+    rules: {
+      '@typescript-eslint/await-thenable': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
     sortArrays: ['src/**/*.ts?(x)'],
     sortInterfaces: false,
     sortObjectKeys: ['*.ts'],
@@ -68,7 +73,7 @@ export default eslintConfig(
   {
     files: ['src/components/ui/rich-text-editor/**'],
     rules: {
-      '@next/next/no-img-element': 0,
+      '@next/next/no-img-element': 'off',
     },
   },
 )

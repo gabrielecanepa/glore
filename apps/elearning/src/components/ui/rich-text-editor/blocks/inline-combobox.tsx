@@ -43,9 +43,9 @@ interface InlineComboboxContextValue {
   inputProps: UseComboboxInputResult['props']
   inputRef: React.RefObject<HTMLInputElement | null>
   removeInput: UseComboboxInputResult['removeInput']
+  setHasEmpty: (hasEmpty: boolean) => void
   showTrigger: boolean
   trigger: string
-  setHasEmpty: (hasEmpty: boolean) => void
 }
 
 export const InlineComboboxContext = createContext<InlineComboboxContextValue>(
@@ -61,12 +61,12 @@ const defaultFilter: FilterFn = ({ group, keywords = [], label, value }, search)
 interface InlineComboboxProps {
   children: React.ReactNode
   element: TElement
-  trigger: string
   filter?: FilterFn | false
   hideWhenNoValue?: boolean
-  showTrigger?: boolean
-  value?: string
   setValue?: (value: string) => void
+  showTrigger?: boolean
+  trigger: string
+  value?: string
 }
 
 export const InlineCombobox = ({

@@ -17,8 +17,8 @@ export interface MetadataOptions<T extends boolean> {
   image?: string
   parent?: Metadata
   separator?: string
-  translate?: T
   title?: T extends true ? MessageKey : string
+  translate?: T
 }
 
 export interface MetadataParams<T extends AnyRecord> {

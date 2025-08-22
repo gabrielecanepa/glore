@@ -46,14 +46,14 @@ export const logEntities = <T>(entities: Partial<Record<PublicTable, T[]>>) => {
   log.success(`Created ${list.length} ${pluralize(entity, list.length)}`)
 }
 
-export const randomLocales = () => randomRange(locales, 0, 3) as Enums<'locale'>[]
+export const randomLanguages = () => randomRange(locales, 0, 3) as Enums<'language'>[]
 
-export const pickLocales = (record: Record<Enums<'locale'>, string>, locales: Enums<'locale'>[]) => {
+export const pickLanguages = (record: Record<Enums<'language'>, string>, locales: Enums<'language'>[]) => {
   const obj = Object.entries(record).reduce(
-    (obj, [locale, value]) => (locales.includes(locale as Enums<'locale'>) ? { ...obj, [locale]: value } : obj),
+    (obj, [locale, value]) => (locales.includes(locale as Enums<'language'>) ? { ...obj, [locale]: value } : obj),
     {},
   )
-  return Object.keys(obj).length ? (obj as Record<Enums<'locale'>, string>) : record
+  return Object.keys(obj).length ? (obj as Record<Enums<'language'>, string>) : record
 }
 
 export const createIncludes = (args: string[]) => (arg: string) =>

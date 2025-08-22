@@ -20,44 +20,42 @@ import { type Any } from '@repo/utils/types'
 
 import { cn } from '@/lib/utils'
 
-type MotionHighlightMode = 'children' | 'parent'
-
 interface Bounds {
-  top: number
-  left: number
-  width: number
   height: number
+  left: number
+  top: number
+  width: number
 }
 
 interface MotionHighlightContextType<T extends string> {
-  mode: MotionHighlightMode
-  activeValue: T | null
-  setActiveValue: (value: T | null) => void
-  setBounds: (bounds: DOMRect) => void
-  clearBounds: () => void
-  id: string
-  hover: boolean
-  className?: string
   activeClassName?: string
-  setActiveClassName: (className: string) => void
-  transition?: Transition
+  activeValue: T | null
+  className?: string
+  clearBounds: () => void
   disabled?: boolean
   enabled?: boolean
   exitDelay?: number
   forceUpdateBounds?: boolean
+  hover: boolean
+  id: string
+  mode: 'children' | 'parent'
+  setActiveClassName: (className: string) => void
+  setActiveValue: (value: T | null) => void
+  setBounds: (bounds: DOMRect) => void
+  transition?: Transition
 }
 
 interface BaseMotionHighlightProps<T extends string> {
-  mode?: MotionHighlightMode
-  value?: T | null
-  defaultValue?: T | null
-  onValueChange?: (value: T | null) => void
   className?: string
-  transition?: Transition
-  hover?: boolean
+  defaultValue?: T | null
   disabled?: boolean
   enabled?: boolean
   exitDelay?: number
+  hover?: boolean
+  mode?: 'children' | 'parent'
+  onValueChange?: (value: T | null) => void
+  transition?: Transition
+  value?: T | null
 }
 
 interface ParentModeMotionHighlightProps {
@@ -115,16 +113,16 @@ export type MotionHighlightProps<T extends string> = React.ComponentProps<'div'>
   }
 
 export interface MotionHighlightItemProps extends React.ComponentProps<'div'> {
-  children: React.ReactElement
-  id?: string
-  value?: string
-  className?: string
-  transition?: Transition
   activeClassName?: string
+  asChild?: boolean
+  children: React.ReactElement
+  className?: string
   disabled?: boolean
   exitDelay?: number
-  asChild?: boolean
   forceUpdateBounds?: boolean
+  id?: string
+  transition?: Transition
+  value?: string
 }
 
 const MotionHighlightContext = createContext<MotionHighlightContextType<Any> | undefined>(undefined)

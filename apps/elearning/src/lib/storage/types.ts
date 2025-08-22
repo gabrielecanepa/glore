@@ -1,6 +1,7 @@
 import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 import { type CourseListTab } from '@/components/features/courses/course-list'
+import { type CourseTab } from '@/hooks/use-course'
 import { type Course } from '@/lib/api/courses'
 import { type User } from '@/lib/api/users/types'
 import { type Locale } from '@/lib/i18n/types'
@@ -10,10 +11,11 @@ import { type Theme } from '@/lib/theme'
  * Application cookies values.
  */
 export interface Cookies {
-  NEXT_LOCALE: Locale
-  'course-card-language': Record<Course['slug'], Locale>
+  'course-language': Record<Course['slug'], Locale>
   'course-list-languages': Locale[]
   'course-list-tab': CourseListTab
+  'course-view-tab': Record<Course['slug'], CourseTab>
+  NEXT_LOCALE: Locale
   org: number
   'sidebar-open': boolean
   user: User

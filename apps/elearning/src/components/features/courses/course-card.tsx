@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { BookOpenIcon, DraftingCompassIcon, Edit3Icon, UserPenIcon } from 'lucide-react'
+import { BookOpenIcon, Edit3Icon, LanguagesIcon, UserPenIcon } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
 import { useFormatter } from 'use-intl'
 
@@ -17,7 +17,7 @@ import { DynamicIcon } from '@/components/ui/icons/dynamic'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
@@ -29,9 +29,8 @@ import { cn } from '@/lib/utils'
 
 interface LanguageItem extends LocaleItem {
   active: boolean
+  published: boolean
   setLanguage: (value: Locale) => void
-  showTooltip: boolean
-  tooltipProps?: TooltipContentProps
 }
 
 const CourseCardLanguage = ({
@@ -39,23 +38,25 @@ const CourseCardLanguage = ({
   className,
   displayLabel,
   icon,
+  published,
   setLanguage,
-  showTooltip,
-  tooltipProps,
+  showState = true,
   value,
   ...props
-}: React.HTMLAttributes<HTMLButtonElement> & LanguageItem) => {
+}: React.HTMLAttributes<HTMLButtonElement> &
+  LanguageItem & {
+    showState?: boolean
+  }) => {
   const t = useTranslations('Courses')
 
   const handleClick = useCallback(() => {
-    if (active) return
-    setLanguage(value)
+    if (!active) setLanguage(value)
   }, [active, setLanguage, value])
 
-  const trigger = useMemo(
+  const button = useMemo(
     () => (
       <Button
-        className={cn('text-base leading-[1]', active ? 'pointer-events-none cursor-default' : 'opacity-40', className)}
+        className={cn('text-base leading-[1]', active ? 'pointer-events-none cursor-default' : 'opacity-50', className)}
         onClick={handleClick}
         size="text"
         variant="transparent"
@@ -67,28 +68,31 @@ const CourseCardLanguage = ({
     [active, className, handleClick, icon, props],
   )
 
-  if (active || !showTooltip) return trigger
+  if (!showState) return button
 
   return (
-    <Tooltip delayDuration={500} disableHoverableContent>
-      <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-      <TooltipContent arrow={false} size="sm" {...tooltipProps}>
-        {`${t('seeIn')} ${displayLabel}`}
-      </TooltipContent>
-    </Tooltip>
+    <div className="flex flex-col items-center gap-0">
+      <Tooltip delayDuration={300} disableHoverableContent>
+        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        <TooltipContent arrow={false} sideOffset={2} size="sm">
+          {`${t('previewIn')} ${displayLabel}`}
+        </TooltipContent>
+      </Tooltip>
+      {showState && <div className={cn('size-1 rounded-full', published ? 'bg-success' : 'bg-warning/90')}></div>}
+    </div>
   )
 }
 
 export const CourseCard = ({
   activeLanguages,
   course,
-  showTooltips = true,
+  showState = true,
 }: {
   activeLanguages: Locale[]
   course: Course & {
     language: Locale
   }
-  showTooltips?: boolean
+  showState?: boolean
 }) => {
   const { locale, localeItems, locales, localize } = useLocale()
   const { user } = useSession()
@@ -103,9 +107,9 @@ export const CourseCard = ({
     (value: Locale) => {
       if (value === language) return
       setLanguage(value)
-      const languageCookie = cookies.get('course-card-language') || {}
+      const languageCookie = cookies.get('course-language') || {}
       languageCookie[course.slug] = value
-      cookies.set('course-card-language', languageCookie)
+      cookies.set('course-language', languageCookie)
     },
     [course.slug, language],
   )
@@ -128,48 +132,15 @@ export const CourseCard = ({
                   {
                     ...item,
                     active: item.value === language,
+                    published: course.languages.includes(item.value),
                     setLanguage: updateLanguage,
-                    showTooltip: showTooltips,
                   },
                 ]
               : items,
           [] as LanguageItem[],
         )
         .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
-    [activeLanguages, language, localeItems, locales, showTooltips, updateLanguage],
-  )
-
-  const publishedLanguageItems = useMemo(
-    () => languageItems.filter(({ value }) => course.publishedLocales?.includes(value)),
-    [course.publishedLocales, languageItems],
-  )
-
-  const draftLanguageItems = useMemo(
-    () => languageItems.filter(({ value }) => course.draftLocales?.includes(value)),
-    [course.draftLocales, languageItems],
-  )
-
-  const missingLanguageItems = useMemo(
-    () =>
-      languageItems.filter(
-        ({ value }) => !course.publishedLocales?.includes(value) && !course.draftLocales?.includes(value),
-      ),
-    [course.publishedLocales, course.draftLocales, languageItems],
-  )
-
-  const visibleLanguages = useMemo(
-    () => [...(course.publishedLocales ?? []), ...(course.draftLocales ?? [])],
-    [course.publishedLocales, course.draftLocales],
-  )
-
-  const isPublished = useMemo(
-    () => publishedLanguageItems.length === languageItems.length,
-    [publishedLanguageItems.length, languageItems.length],
-  )
-
-  const isPartial = useMemo(
-    () => publishedLanguageItems.length > 0 && publishedLanguageItems.length < languageItems.length,
-    [publishedLanguageItems.length, languageItems.length],
+    [activeLanguages, course.languages, language, localeItems, locales, updateLanguage],
   )
 
   const title = useMemo(() => translate(course.title), [course.title, translate])
@@ -194,22 +165,13 @@ export const CourseCard = ({
     )
   }, [course.description, translate])
 
-  const noDraftsMessage = useMemo(() => {
-    if (languageItems.length === publishedLanguageItems.length)
-      return (
-        <>
-          {t('allLanguagesPublished')} <span className="text-muted-foreground/80">{'🎉'}</span>
-        </>
-      )
-    return t('noDrafts')
-  }, [languageItems.length, publishedLanguageItems.length, t])
-
-  const lessonsCount = useMemo(() => course.lessons?.length, [course.lessons])
-
-  const lessonsMessage = useMemo(() => {
-    if (lessonsCount > 0) return `${lessonsCount} ${t('lessons', { count: lessonsCount })}`
-    return user.canEdit ? t('noLessonsCreated') : t('noLessons')
-  }, [lessonsCount, t, user.canEdit])
+  const lessonsMessage = useMemo(
+    () =>
+      course.lessons.length > 0
+        ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
+        : t('noLessonsCreated'),
+    [course.lessons.length, t],
+  )
 
   const createdOn = useMemo(
     () =>
@@ -233,56 +195,45 @@ export const CourseCard = ({
 
   useEffect(() => {
     if (activeLanguages.includes(language)) return
-    updateLanguage(visibleLanguages.includes(locale) ? locale : activeLanguages[0])
+    updateLanguage(course.languages.includes(locale) ? locale : activeLanguages[0])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeLanguages])
 
   return (
     <Card className="min-h-80">
       <CardHeader className="gap-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex gap-2.5">
-            <DynamicIcon
-              className={cn(
-                'size-4 shrink-0 stroke-muted-foreground/80',
-                isPartial && 'stroke-warning',
-                isPublished && 'stroke-success',
-              )}
-              name={course.icon as IconName}
-              placeholder={Skeleton}
-              placeholderProps={{ className: 'size-4 shrink-0' }}
-            />
-            <div className="flex grow flex-col gap-0.5">
-              <div className="-mt-0.5 flex">
-                <Link
-                  className={cn(
-                    'text-base leading-[normal]',
-                    title ? 'font-semibold' : 'font-medium text-muted-foreground/50',
-                  )}
-                  href={coursePath}
-                  title={t('viewCourse')}
-                >
-                  {title ?? t('noTitle')}
-                </Link>
-                {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
-              </div>
-              {course.skillGroup && (
-                <span className="text-xs font-medium text-muted-foreground">
-                  {translate(course.skillGroup.name as IntlRecord)}
-                </span>
-              )}
+        <div className="flex gap-2.5">
+          <DynamicIcon
+            className="size-4 shrink-0 stroke-muted-foreground/80"
+            name={course.icon as IconName}
+            placeholder={Skeleton}
+            placeholderProps={{ className: 'size-4 shrink-0' }}
+          />
+          <div className="flex grow flex-col gap-0.5">
+            <div className="-mt-0.5 flex">
+              <Link
+                className={cn(
+                  'text-base leading-[normal] font-semibold transition-none',
+                  !title && 'text-muted-foreground/50',
+                )}
+                href={coursePath}
+                title={t('viewCourse')}
+              >
+                {title ?? t('noTitle')}
+              </Link>
+              {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
             </div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            {publishedLanguageItems.map(item => (
-              <CourseCardLanguage key={item.value} {...item} />
-            ))}
+            {course.skillGroup && (
+              <span className="text-xs font-medium text-muted-foreground">
+                {translate(course.skillGroup.name as IntlRecord)}
+              </span>
+            )}
           </div>
         </div>
       </CardHeader>
       <CardContent className="mb-0.5">
         <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground/50')}>
-          {description}
+          {description ?? t('noDescription')}
         </p>
       </CardContent>
       <CardFooter className="flex grow flex-col justify-end gap-4">
@@ -291,58 +242,21 @@ export const CourseCard = ({
           {user.canEdit && (
             <>
               <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-                <DraftingCompassIcon className="size-3.5 text-muted-foreground" />
-                {draftLanguageItems.length + missingLanguageItems.length > 0 ? (
-                  <div className="flex items-center gap-1">
-                    {draftLanguageItems.length > 0 && (
-                      <>
-                        {t('draftIn')}
-                        {draftLanguageItems.map(item => (
-                          <CourseCardLanguage
-                            className="text-sm"
-                            key={item.value}
-                            tooltipProps={{ size: 'xs', sideOffset: 2 }}
-                            {...item}
-                          />
-                        ))}
-                      </>
-                    )}
-                    {missingLanguageItems.length > 0 && (
-                      <>
-                        {draftLanguageItems.length > 0 ? (
-                          <span>{`– ${t('missingIn').toLowerCase()}`}</span>
-                        ) : (
-                          t('missingIn')
-                        )}
-                        {missingLanguageItems.map(({ displayLabel, icon, value }) => (
-                          <Tooltip delayDuration={250} disableHoverableContent key={value}>
-                            <TooltipTrigger asChild>
-                              <Button
-                                className="text-sm leading-[1] opacity-40 hover:opacity-100"
-                                size="text"
-                                variant="transparent"
-                              >
-                                <Link href={getCoursePath(value)}>{icon}</Link>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent arrow={false} sideOffset={2} size="xs">
-                              {`${t('createIn')} ${displayLabel}`}
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
-                      </>
-                    )}
-                  </div>
-                ) : (
-                  <span className="pointer-events-none text-muted-foreground/50 select-none">{noDraftsMessage}</span>
-                )}
+                <LanguagesIcon className="size-3.5 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  {languageItems.map(item => (
+                    <CourseCardLanguage key={item.value} showState={showState} {...item} />
+                  ))}
+                </div>
               </div>
             </>
           )}
           <div
             className={cn(
               'flex items-center gap-2.5 text-xs font-normal',
-              lessonsCount ? 'text-muted-foreground' : 'pointer-events-none text-muted-foreground/50 select-none',
+              course.lessons.length > 0
+                ? 'text-muted-foreground'
+                : 'pointer-events-none text-muted-foreground/50 select-none',
             )}
           >
             <BookOpenIcon className="size-3.5 text-muted-foreground" />

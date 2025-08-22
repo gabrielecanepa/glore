@@ -1,14 +1,13 @@
 import eslint from '@eslint/js'
 import { type Linter } from 'eslint'
 
+import { DEFAULT_OPTIONS } from '@/config'
 import stylisticPlugin from '@stylistic/eslint-plugin'
 import { deepmerge } from 'deepmerge-ts'
 import gitignoreConfig from 'eslint-config-flat-gitignore'
 import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
-
-import { DEFAULT_OPTIONS } from '@/config'
 
 import {
   RuleSeverity,

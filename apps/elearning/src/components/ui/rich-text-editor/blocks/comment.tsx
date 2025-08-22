@@ -35,10 +35,10 @@ import { BasicMarksKit } from '@rte/kits/basic-marks'
 import { discussionPlugin, type TDiscussion } from '@rte/kits/discussion'
 
 export interface TComment {
-  id: string
   contentRich: Value
   createdAt: Date
   discussionId: string
+  id: string
   isEdited: boolean
   userId: string
 }

@@ -7,7 +7,7 @@ export const generateMetadata = createMetadata({
 })
 
 export default async () => {
-  const coursesLanguage = await getCookie('course-card-language')
+  const coursesLanguage = await getCookie('course-language')
   const languageFilter = await getCookie('course-list-languages')
   const tab = await getCookie('course-list-tab')
 

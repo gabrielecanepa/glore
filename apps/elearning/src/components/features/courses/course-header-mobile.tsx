@@ -7,24 +7,14 @@ import { ChevronDownIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
+import { useCourse } from '@/hooks/use-course'
 import { useLocale } from '@/hooks/use-locale'
 import { useScroll } from '@/hooks/use-scroll'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/courses/types'
-import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 
-export const CourseHeaderMobile = ({
-  course,
-  language,
-  setStep,
-  step,
-}: {
-  course: Course | Partial<Course>
-  language?: Locale
-  step: number
-  setStep: (index: number) => void
-}) => {
+export const CourseHeaderMobile = () => {
+  const { course, language, setStep, step } = useCourse()
   const { localize } = useLocale()
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')

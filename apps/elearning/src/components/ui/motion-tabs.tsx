@@ -13,7 +13,6 @@ import {
   useState,
 } from 'react'
 
-import { cva, type VariantProps } from 'class-variance-authority'
 import { motion, type HTMLMotionProps, type Transition } from 'motion/react'
 
 import { MotionHighlight, MotionHighlightItem } from '@/components/ui/motion-highlight'
@@ -27,23 +26,23 @@ export interface MotionTabsContext {
 
 export const MotionTabsContext = createContext<MotionTabsContext | undefined>(undefined)
 
-export const useMotionMotionTabs = (): MotionTabsContext => {
+export const useMotionTabs = (): MotionTabsContext => {
   const context = useContext(MotionTabsContext)
-  if (!context) throw new Error('useMotionMotionTabs must be used within a MotionTabsProvider')
+  if (!context) throw new Error('useMotionTabs must be used within a MotionTabsProvider')
   return context
 }
 
 export interface MotionTabsProps extends React.ComponentProps<'div'> {
   defaultValue?: string
-  value?: string
   onValueChange?: (value: string) => void
+  value?: string
 }
 
 export const MotionTabs = ({ children, className, defaultValue, onValueChange, value, ...props }: MotionTabsProps) => {
   const [activeValue, setActiveValue] = useState<string | undefined>(defaultValue ?? undefined)
   const triggersRef = useRef(new Map<string, HTMLElement>())
   const initialSet = useRef(false)
-  const isControlled = value !== undefined
+  const isControlled = useMemo(() => value !== undefined, [value])
 
   useEffect(() => {
     if (!isControlled && activeValue === undefined && triggersRef.current.size > 0 && !initialSet.current) {
@@ -53,14 +52,17 @@ export const MotionTabs = ({ children, className, defaultValue, onValueChange, v
     }
   }, [activeValue, isControlled])
 
-  const registerTrigger = (value: string, node: HTMLElement | null) => {
-    if (!node) return triggersRef.current.delete(value)
-    triggersRef.current.set(value, node)
-    if (!isControlled && activeValue === undefined && !initialSet.current) {
-      setActiveValue(value)
-      initialSet.current = true
-    }
-  }
+  const registerTrigger = useCallback(
+    (value: string, node: HTMLElement | null) => {
+      if (!node) return triggersRef.current.delete(value)
+      triggersRef.current.set(value, node)
+      if (!isControlled && activeValue === undefined && !initialSet.current) {
+        setActiveValue(value)
+        initialSet.current = true
+      }
+    },
+    [activeValue, isControlled],
+  )
 
   const handleValueChange = useCallback(
     (value: string) => {
@@ -97,12 +99,12 @@ export const MotionTabsList = ({
   transition = {
     type: 'spring',
     duration: 0.1,
-    stiffness: 250,
+    stiffness: 300,
     damping: 30,
   },
   ...props
 }: MotionTabsListProps) => {
-  const { activeValue } = useMotionMotionTabs()
+  const { activeValue } = useMotionTabs()
 
   return (
     <MotionHighlight
@@ -127,7 +129,7 @@ export const MotionTabsList = ({
 }
 
 export interface MotionTabsTriggerProps extends HTMLMotionProps<'button'> {
-  badgeProps?: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof motionTabsTriggerBadge>
+  badgeProps?: React.HTMLAttributes<HTMLSpanElement>
   count?: number
   showZeroCount?: boolean
   value: string
@@ -143,11 +145,10 @@ export const MotionTabsTrigger = ({
   value,
   ...props
 }: MotionTabsTriggerProps) => {
-  const { activeValue, handleValueChange, registerTrigger } = useMotionMotionTabs()
+  const { activeValue, handleValueChange, registerTrigger } = useMotionTabs()
 
   const localRef = useRef<HTMLButtonElement | null>(null)
   const showCount = useMemo(() => count !== undefined && (showZeroCount || count > 0), [count, showZeroCount])
-  const { variant, ...badgeRest } = badgeProps ?? {}
 
   useImperativeHandle(ref, () => localRef.current as HTMLButtonElement)
 
@@ -182,9 +183,11 @@ export const MotionTabsTrigger = ({
         {...props}
       >
         {showCount ? (
-          <span className="flex items-center gap-1 data-[active=true]:text-foreground" {...badgeRest}>
+          <span className="flex items-center gap-1 data-[active=true]:text-foreground" {...badgeProps}>
             {children as React.ReactNode}
-            <span className={cn(motionTabsTriggerBadge({ variant }))}>{count}</span>
+            <span className="text-muted-foreground/50 group-data-[state=active]/motion-tabs-trigger:text-muted-foreground">
+              {count}
+            </span>
           </span>
         ) : (
           children
@@ -193,20 +196,6 @@ export const MotionTabsTrigger = ({
     </MotionHighlightItem>
   )
 }
-
-export const motionTabsTriggerBadge = cva('text-stroke-0', {
-  defaultVariants: {
-    variant: 'default',
-  },
-  variants: {
-    variant: {
-      default: 'text-muted-foreground/50 group-data-[state=active]/motion-tabs-trigger:text-muted-foreground',
-      success: 'text-success/50 group-data-[state=active]/motion-tabs-trigger:text-success',
-      warning: 'text-warning/50 group-data-[state=active]/motion-tabs-trigger:text-warning',
-      destructive: 'text-destructive/50 group-data-[state=active]/motion-tabs-trigger:text-destructive',
-    },
-  },
-})
 
 export interface MotionTabsContentsProps extends React.ComponentProps<'div'> {
   transition?: Transition
@@ -224,16 +213,20 @@ export const MotionTabsContents = ({
   },
   ...props
 }: MotionTabsContentsProps) => {
-  const { activeValue } = useMotionMotionTabs()
+  const { activeValue } = useMotionTabs()
   const childrenArray = Children.toArray(children)
 
-  const activeIndex = childrenArray.findIndex(
-    (child): child is React.ReactElement<{ value: string }> =>
-      isValidElement(child) &&
-      typeof child.props === 'object' &&
-      child.props !== null &&
-      'value' in child.props &&
-      child.props.value === activeValue,
+  const activeIndex = useMemo(
+    () =>
+      childrenArray.findIndex(
+        (child): child is React.ReactElement<{ value: string }> =>
+          isValidElement(child) &&
+          typeof child.props === 'object' &&
+          child.props !== null &&
+          'value' in child.props &&
+          child.props.value === activeValue,
+      ),
+    [activeValue, childrenArray],
   )
 
   return (
@@ -254,12 +247,11 @@ export interface MotionTabsContentProps extends HTMLMotionProps<'div'> {
 }
 
 export const MotionTabsContent = ({ children, className, value, ...props }: MotionTabsContentProps) => {
-  const { activeValue } = useMotionMotionTabs()
-  const isActive = useMemo(() => activeValue === value, [activeValue, value])
+  const { activeValue } = useMotionTabs()
 
   return (
     <motion.div
-      animate={{ filter: isActive ? 'blur(0px)' : 'blur(2px)' }}
+      animate={{ filter: activeValue === value ? 'blur(0px)' : 'blur(2px)' }}
       className={cn('overflow-hidden', className)}
       data-slot="motion-tabs-content"
       exit={{ filter: 'blur(0px)' }}

@@ -13,9 +13,9 @@ type Formats = typeof FORMATS
 
 declare module 'use-intl' {
   interface AppConfig {
+    Formats: Formats
     Locale: Locale
     Messages: Messages
-    Formats: Formats
   }
 }
 
@@ -31,13 +31,13 @@ export type IntlTranslator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf
  */
 export interface Translator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never>
   extends IntlTranslator<NestedKey> {
-  raw(key: Parameters<IntlTranslator<NestedKey>['raw']>[0]): string
   /**
    * Flat translation function that allows passing any string as a key.
    *
    * **⚠️ Use with caution!** This method bypasses type safety and should be called only when using known dynamic keys.
    */
   flat: (key: string) => string
+  raw(key: Parameters<IntlTranslator<NestedKey>['raw']>[0]): string
 }
 
 /**
@@ -50,9 +50,9 @@ export type MessageKey = Exclude<NestedKeyOf<Messages>, keyof Messages>
  */
 export interface LocaleItem {
   displayLabel: string
+  icon: string
   label: string
   value: Locale
-  icon: string
 }
 
 /**

@@ -22,10 +22,10 @@ interface ConfettiContext {
 const ConfettiContext = createContext<ConfettiContext>({} as ConfettiContext)
 
 export interface ConfettiProps extends React.ComponentPropsWithRef<'canvas'> {
-  options?: Options
+  children?: ReactNode
   globalOptions?: GlobalOptions
   manualstart?: boolean
-  children?: ReactNode
+  options?: Options
 }
 
 export const Confetti = forwardRef<ConfettiContext | null, ConfettiProps>((props, ref) => {
@@ -84,11 +84,11 @@ export const Confetti = forwardRef<ConfettiContext | null, ConfettiProps>((props
 
 export interface ConfettiButtonProps extends Omit<ButtonProps, 'effect'> {
   children?: React.ReactNode
+  effect?: 'confetti' | 'fireworks'
   options?: Options &
     GlobalOptions & {
       canvas?: HTMLCanvasElement
     }
-  effect?: 'confetti' | 'fireworks'
 }
 
 export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props }: ConfettiButtonProps) => {

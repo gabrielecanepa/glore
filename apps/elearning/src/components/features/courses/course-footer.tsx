@@ -20,6 +20,7 @@ import {
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useConfig } from '@/hooks/use-config'
+import { useCourse } from '@/hooks/use-course'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { type CourseProgress, type Lesson } from '@/lib/api/courses/types'
@@ -31,15 +32,14 @@ export const CourseFooter = ({
   onNext,
   onPrevious,
   status,
-  step,
 }: {
   lessons?: Lesson[]
   onNext: () => Promise<void>
   onPrevious: () => void
   status?: Enum<CourseProgress>
-  step: number
 }) => {
   const { minSkills } = useConfig()
+  const { step } = useCourse()
   const { courses } = useSession()
   const t = useTranslations('Courses')
 

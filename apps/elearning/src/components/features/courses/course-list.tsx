@@ -31,52 +31,37 @@ import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const COURSE_LIST_TABS = {
-  editor: ['all', 'published', 'partial', 'draft', 'missing', 'archived'],
-  learner: ['all', 'not_started', 'in_progress', 'completed'],
-} as const
+const COURSE_LIST_EDITOR_TABS = ['all', 'published', 'partial', 'draft', 'archived'] as const
+const COURSE_LIST_LEARNER_TABS = ['all', 'not_started', 'in_progress', 'completed'] as const
+const COURSE_LIST_EDITOR_SORTS = ['name', 'type'] as const
+const COURSE_LIST_LEARNER_SORTS = ['name', 'progress', 'type'] as const
 
-const COURSE_LIST_SORTS = {
-  editor: ['name', 'type'],
-  learner: ['name', 'progress', 'type'],
-} as const
-
-export type CourseListTab = (typeof COURSE_LIST_TABS.editor)[number] | (typeof COURSE_LIST_TABS.learner)[number]
-export type CourseListSort = (typeof COURSE_LIST_SORTS.editor)[number] | (typeof COURSE_LIST_SORTS.learner)[number]
+export type CourseListTab = (typeof COURSE_LIST_EDITOR_TABS)[number] | (typeof COURSE_LIST_LEARNER_TABS)[number]
+export type CourseListSort = (typeof COURSE_LIST_EDITOR_SORTS)[number] | (typeof COURSE_LIST_LEARNER_SORTS)[number]
 export type CourseListSortOptions = Record<CourseListSort, string>
 export type CourseListSortDirection = 'asc' | 'desc'
 
 const CourseListTab = ({ value, ...props }: { count: number; value: CourseListTab }) => {
   const t = useTranslations('Courses')
 
-  const variant = useMemo(() => {
-    switch (value) {
-      case 'published':
-        return 'success'
-      case 'partial':
-        return 'warning'
-      case 'missing':
-        return 'destructive'
-      default:
-        return 'default'
-    }
-  }, [value])
+  if (value === 'archived')
+    return (
+      <MotionTabsTrigger className="flex items-center p-0" value={value} {...props}>
+        <Tooltip delayDuration={0} disableHoverableContent>
+          <TooltipTrigger asChild>
+            <span className="inline-block px-3.5">
+              <ArchiveIcon />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent arrow={false} sideOffset={10}>
+            {t('archive')}
+          </TooltipContent>
+        </Tooltip>
+      </MotionTabsTrigger>
+    )
 
-  return value === 'archived' ? (
-    <MotionTabsTrigger badgeProps={{ variant }} className="flex items-center p-0" value={value} {...props}>
-      <Tooltip delayDuration={0} disableHoverableContent>
-        <TooltipTrigger asChild>
-          <span className="inline-block px-3.5">
-            <ArchiveIcon />
-          </span>
-        </TooltipTrigger>
-        <TooltipContent arrow={false} sideOffset={10}>
-          {t('archive')}
-        </TooltipContent>
-      </Tooltip>
-    </MotionTabsTrigger>
-  ) : (
-    <MotionTabsTrigger badgeProps={{ variant }} className="flex items-center gap-1" value={value} {...props}>
+  return (
+    <MotionTabsTrigger className="flex items-center gap-1" value={value} {...props}>
       {t.flat(value)}
     </MotionTabsTrigger>
   )
@@ -100,9 +85,9 @@ const CourseListSort = ({
   const tCourses = useTranslations('Courses')
   const [open, setOpen] = useState(false)
 
-  const options = useMemo(() => {
-    const sorts = user.canEdit ? COURSE_LIST_SORTS.editor : COURSE_LIST_SORTS.learner
-    return sorts.reduce((options, sort) => ({ ...options, [sort]: tCourses.flat(sort) }), {} as CourseListSortOptions)
+  const options = useMemo<CourseListSortOptions>(() => {
+    const sorts = user.canEdit ? COURSE_LIST_EDITOR_SORTS : COURSE_LIST_LEARNER_SORTS
+    return sorts.reduce((acc, sort) => ({ ...acc, [sort]: tCourses.flat(sort) }), {} as CourseListSortOptions)
   }, [tCourses, user.canEdit])
 
   const icon = useMemo(() => {
@@ -143,16 +128,15 @@ const CourseListSort = ({
       <DropdownMenuContent align="end" className="w-40">
         <DropdownMenuLabel>{t('sortBy')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {Object.entries(options).map(([key, label]) => {
-          const option = key as CourseListSort
-          return (
+        {(Object.entries(options) as [CourseListSort, string][]).map(
+          ([option, label]) =>
             (option !== 'progress' || (tab !== 'not_started' && tab !== 'completed')) && (
               <DropdownMenuItem
                 className={cn(
                   'group/dropdown-menu-item flex h-9 cursor-pointer items-center justify-between',
                   value === option && 'cursor-default bg-accent dark:bg-background/40',
                 )}
-                key={key}
+                key={option}
                 onClick={handleSortChange(option)}
                 onSelect={handleSortItemSelect}
               >
@@ -166,9 +150,8 @@ const CourseListSort = ({
                   </Button>
                 )}
               </DropdownMenuItem>
-            )
-          )
-        })}
+            ),
+        )}
         {value && (
           <>
             <DropdownMenuSeparator />
@@ -193,7 +176,7 @@ export const CourseList = ({
   defaultTab?: CourseListTab
 }) => {
   const { locale, localeItems, locales, localize } = useLocale()
-  const { courses: allCourses, user } = useSession()
+  const { user, ...session } = useSession()
   const t = useTranslations('Courses')
 
   const [activeTab, setActiveTab] = useState<CourseListTab>(defaultTab)
@@ -215,57 +198,44 @@ export const CourseList = ({
 
   const hasFilters = useMemo(() => activeLanguages.length !== locales.length, [activeLanguages.length, locales.length])
 
-  const getAvailableLanguages = useCallback(
-    (course: Course) => {
-      const published = sortLanguages(course.publishedLocales)
-      const draft = sortLanguages(course.draftLocales)
-      return { all: sortLanguages([...published, ...draft]), published, draft }
-    },
-    [sortLanguages],
-  )
-
   const courses = useMemo<Record<SnakeToCamel<CourseListTab>, Course[]>>(() => {
-    const notArchived = allCourses.filter(course => !course.archivedAt)
-    const archived = allCourses.filter(course => course.archivedAt)
+    const all = session.courses.filter(course => !course.archivedAt)
 
-    const all = notArchived.filter(course =>
-      activeLanguages.some(locale => getAvailableLanguages(course).all.includes(locale)),
-    )
-    const published = all.filter(course => activeLanguages.every(locale => course.publishedLocales?.includes(locale)))
-    const partial = all.filter(
-      course =>
-        activeLanguages.length !== course.publishedLocales?.length &&
-        activeLanguages.some(locale => course.publishedLocales?.includes(locale)),
-    )
-    const draft = all.filter(course =>
-      activeLanguages.every(
-        locale => !course.publishedLocales?.includes(locale) || course.draftLocales?.includes(locale),
-      ),
-    )
-    const missing = all.filter(course =>
-      locales.some(locale => !course.publishedLocales?.includes(locale) && !course.draftLocales?.includes(locale)),
-    )
+    if (user.canEdit)
+      return {
+        all,
+        published: all.filter(course => activeLanguages.every(lang => course.languages.includes(lang))),
+        partial: all.filter(course => {
+          const published = activeLanguages.filter(lang => course.languages.includes(lang))
+          return published.length > 0 && published.length < activeLanguages.length
+        }),
+        draft: all.filter(course => activeLanguages.every(lang => !course.languages.includes(lang))),
+        archived: session.courses.filter(course => course.archivedAt),
+        notStarted: [],
+        inProgress: [],
+        completed: [],
+      }
 
-    const visible = notArchived.filter(course =>
-      activeLanguages.some(locale => course.publishedLocales?.includes(locale)),
-    )
-    const notStarted = visible.filter(course => course.progress === 'not_started')
-    const inProgress = visible.filter(course => course.progress === 'in_progress')
-    const completed = visible.filter(course => course.progress === 'completed')
-
-    return { all, published, partial, draft, missing, archived, notStarted, inProgress, completed }
-  }, [allCourses, activeLanguages, getAvailableLanguages, locales])
+    return {
+      all,
+      published: [],
+      partial: [],
+      draft: [],
+      archived: session.courses.filter(course => course.archivedAt),
+      notStarted: all.filter(course => course.progress === 'not_started'),
+      inProgress: all.filter(course => course.progress === 'in_progress'),
+      completed: all.filter(course => course.progress === 'completed'),
+    }
+  }, [session.courses, user.canEdit, activeLanguages])
 
   const tabs = useMemo<CourseListTab[]>(
     () =>
       user.canEdit
         ? activeLanguages.length > 1
-          ? hasFilters
-            ? [...COURSE_LIST_TABS.editor]
-            : COURSE_LIST_TABS.editor.filter(tab => tab !== 'missing')
-          : COURSE_LIST_TABS.editor.filter(tab => tab !== 'partial')
-        : [...COURSE_LIST_TABS.learner],
-    [user.canEdit, activeLanguages.length, hasFilters],
+          ? [...COURSE_LIST_EDITOR_TABS]
+          : COURSE_LIST_EDITOR_TABS.filter(tab => tab !== 'partial')
+        : [...COURSE_LIST_LEARNER_TABS],
+    [user.canEdit, activeLanguages.length],
   )
 
   const displayedCourses = useMemo(
@@ -274,8 +244,7 @@ export const CourseList = ({
         .map(course => {
           const cookieLanguage = defaultCoursesLanguage?.[String(course.id)]
           if (cookieLanguage && activeLanguages.includes(cookieLanguage)) return { ...course, language: cookieLanguage }
-          const langs = getAvailableLanguages(course)
-          const lang = langs.all.includes(locale) ? locale : langs.published[0] || langs.draft[0]
+          const lang = course.languages.includes(locale) ? locale : course.languages[0]
           return { ...course, language: lang }
         })
         .sort((a, b) => {
@@ -293,21 +262,9 @@ export const CourseList = ({
             default:
               return a.createdAt < b.createdAt ? 1 : 0
           }
-        }),
-    [
-      activeLanguages,
-      activeSort,
-      activeTab,
-      courses,
-      defaultCoursesLanguage,
-      getAvailableLanguages,
-      locale,
-      localize,
-      sortDirection,
-    ],
+        }) as (Course & { language: Locale })[],
+    [activeLanguages, activeSort, activeTab, courses, defaultCoursesLanguage, locale, localize, sortDirection],
   )
-
-  const showCardTooltips = useMemo(() => activeTab !== 'archived', [activeTab])
 
   const emptyListTitle = useMemo(() => {
     switch (activeTab) {
@@ -405,7 +362,6 @@ export const CourseList = ({
                 options={localeItems}
                 placeholder={t('selectLanguages')}
                 search={false}
-                toastType="warning"
                 value={activeLanguages}
               />
               <CourseListSort
@@ -441,7 +397,7 @@ export const CourseList = ({
                     activeLanguages={activeLanguages}
                     course={course}
                     key={course.id}
-                    showTooltips={showCardTooltips}
+                    showState={activeTab !== 'archived'}
                   />
                 ))}
               </div>

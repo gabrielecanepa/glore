@@ -35,11 +35,11 @@ interface Group {
 }
 
 interface Item {
-  icon: React.ReactNode
-  value: string
-  onSelect: (editor: PlateEditor, value: string) => void
   focusEditor?: boolean
+  icon: React.ReactNode
   label?: string
+  onSelect: (editor: PlateEditor, value: string) => void
+  value: string
 }
 
 export const InsertToolbarButton = (props: DropdownMenuProps) => {

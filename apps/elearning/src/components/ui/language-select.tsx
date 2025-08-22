@@ -32,10 +32,10 @@ interface LanguageSelectItem extends LocaleItem {
 }
 
 export interface LanguageSelectProps extends Omit<SelectTriggerProps, 'onChange'> {
+  addLanguage?: (locale: Locale) => void
   contentProps?: SelectContentProps
   controlled?: boolean
   onChange?: (locale: Locale) => void
-  addLanguage?: (locale: Locale) => void
   status?: {
     published?: Locale[]
     draft?: Locale[]
@@ -65,7 +65,10 @@ export const LanguageSelect = ({
     (locale: Locale) => {
       if (!status) return {}
       if (status.published?.includes(locale))
-        return { badge: <CircleIcon className="size-2.5 fill-success stroke-none" />, status: tCourses('published') }
+        return {
+          badge: <CircleIcon className="size-2.5 fill-success stroke-none" />,
+          status: tCourses('publishedSingle'),
+        }
       if (status.draft?.includes(locale))
         return {
           badge: <CircleIcon className="size-2.5 fill-muted-foreground stroke-none" />,

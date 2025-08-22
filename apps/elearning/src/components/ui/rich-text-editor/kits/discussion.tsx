@@ -6,12 +6,12 @@ import { BlockDiscussion } from '@rte/blocks/block-discussion'
 import type { TComment } from '@rte/blocks/comment'
 
 export interface TDiscussion {
-  id: string
   comments: TComment[]
   createdAt: Date
+  documentContent?: string
+  id: string
   isResolved: boolean
   userId: string
-  documentContent?: string
 }
 
 const discussionsData: TDiscussion[] = [

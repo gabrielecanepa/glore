@@ -270,9 +270,9 @@ export const SidebarRail = ({ className, ...props }: React.ComponentProps<'butto
           group-data-[collapsible=offcanvas]:translate-x-0
           group-data-[side=left]:-right-4
           group-data-[side=right]:left-0
-          after:absolute after:inset-y-0 after:right-2 after:w-[2px] after:bg-sidebar
+          after:absolute after:inset-y-0 after:right-2 after:w-[1px] after:bg-sidebar-border
           group-data-[collapsible=offcanvas]:after:left-full
-          hover:after:bg-sidebar-border
+          hover:after:w-[2px]
           in-data-[side=left]:cursor-w-resize
           in-data-[side=right]:cursor-e-resize
           sm:flex

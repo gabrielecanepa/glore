@@ -38,19 +38,19 @@ import { useChat } from '@rte/hooks/use-chat'
 type EditorChatState = 'cursorCommand' | 'cursorSuggestion' | 'selectionCommand' | 'selectionSuggestion'
 
 interface AIChatItem {
-  icon: React.ReactNode
-  label: string
-  value: string
   component?: React.ComponentType<{
     menuState: EditorChatState
   }>
   filterItems?: boolean
+  icon: React.ReactNode
   items?: {
     label: string
     value: string
   }[]
-  shortcut?: string
+  label: string
   onSelect?: ({ aiEditor, editor }: { aiEditor: SlateEditor; editor: PlateEditor }) => void
+  shortcut?: string
+  value: string
 }
 
 interface MenuStateItems

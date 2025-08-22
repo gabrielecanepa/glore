@@ -2,7 +2,7 @@ import { type Enum } from '@repo/utils/types'
 
 import type { Entity, Timestamp } from '@/lib/api/types'
 import { type User } from '@/lib/api/users/types'
-import { type Enums } from 'supabase/types'
+import { type Enums, type Tables } from 'supabase/types'
 
 export interface SkillGroup extends Entity<'skill_groups'> {}
 
@@ -20,17 +20,24 @@ export enum CourseProgress {
 }
 
 export interface Course extends Entity<'courses', 'title' | 'description', Timestamp> {
-  type: Enums<'course_type'>
-  skillGroup: SkillGroup
-  creator: User
+  completed: boolean
+  completion: number
   contributions: LessonContribution[]
   contributors: User[] & { count?: number }
-  status: Enum<CourseStatus>
-  lessons: Lesson[]
+  creator: User
   enrolled: boolean
-  completion: number
+  languages: Enums<'language'>[]
+  lessons: Lesson[]
   progress: Enum<CourseProgress>
-  completed: boolean
+  skillGroup: SkillGroup
+  status: Enum<CourseStatus>
+  type: Enums<'course_type'>
+}
+
+export interface CourseCreate extends Omit<Tables<'courses'>, 'id'> {}
+
+export interface CourseUpdate extends Partial<Tables<'courses'>> {
+  id: number
 }
 
 export enum LessonType {
@@ -45,12 +52,12 @@ export interface LessonContribution extends Entity<'contributions', never, Times
 }
 
 export interface Lesson extends Entity<'lessons', 'title' | 'content', Timestamp> {
-  type: Enum<LessonType>
-  questions?: Question[]
   assessment?: Assessment
-  evaluations?: Evaluation[]
   completed: boolean
   contributions: LessonContribution[]
+  evaluations?: Evaluation[]
+  questions?: Question[]
+  type: Enum<LessonType>
 }
 
 export interface Question extends Entity<'questions', 'description' | 'explanation'> {

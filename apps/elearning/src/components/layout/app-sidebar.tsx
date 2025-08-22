@@ -85,7 +85,7 @@ const SidebarOrgs = ({
   orgs: UserOrganization[]
   setOrg: (org: UserOrganization) => void
 }) => {
-  const { setPathname } = usePathname()
+  const { setUiPathname } = usePathname()
   const router = useRouter()
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
@@ -96,12 +96,10 @@ const SidebarOrgs = ({
     (org: UserOrganization) => {
       cookies.set('org', org.id)
       router.push(Route.Home)
-      setPathname(Route.Home)
-      setTimeout(() => {
-        setOrg(org)
-      }, 200)
+      setUiPathname(Route.Home)
+      setTimeout(() => setOrg(org), 200)
     },
-    [router, setOrg, setPathname],
+    [router, setOrg, setUiPathname],
   )
 
   return (
@@ -190,21 +188,20 @@ const SidebarNavItem = <I extends Icon = Icon>({
   route,
   subItem,
 }: SidebarItemProps<I>) => {
-  const { pathname, setPathname } = usePathname()
+  const { setUiPathname, uiPathname } = usePathname()
 
-  const Wrapper = useMemo(() => {
-    if (asChild) return Fragment
-    return subItem ? SidebarMenuSubItem : SidebarMenuItem
-  }, [asChild, subItem])
-
-  const isActivePath = useMemo(() => route === pathname, [pathname, route])
-
-  const isActiveRoute = useMemo(
-    () => isActivePath || (route === Route.Home ? pathname === Route.Home : pathname.startsWith(route)),
-    [pathname, route, isActivePath],
+  const Wrapper = useMemo(
+    () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
+    [asChild, subItem],
   )
 
-  const active = useMemo(() => (subItem ? isActivePath : isActiveRoute), [isActivePath, isActiveRoute, subItem])
+  const isActivePath = useMemo(() => route === uiPathname, [uiPathname, route])
+
+  const active = useMemo(() => {
+    if (isActivePath || subItem) return isActivePath
+    if (route === Route.Home) return uiPathname === Route.Home
+    return uiPathname.startsWith(route)
+  }, [isActivePath, subItem, route, uiPathname])
 
   const buttonClassName = useMemo(() => {
     if (!subItem) return className
@@ -234,9 +231,9 @@ const SidebarNavItem = <I extends Icon = Icon>({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       onClick?.(e)
       if (isActivePath) return
-      setPathname(route)
+      setUiPathname(route)
     },
-    [isActivePath, onClick, route, setPathname],
+    [isActivePath, onClick, route, setUiPathname],
   )
 
   return (
@@ -255,8 +252,8 @@ const SidebarNavItem = <I extends Icon = Icon>({
 }
 
 const SidebarNavCollapsible = ({ children, icon, label, route }: SidebarItemProps) => {
-  const { pathname } = usePathname()
-  const [open, setOpen] = useState(pathname.startsWith(route))
+  const { uiPathname } = usePathname()
+  const [open, setOpen] = useState(uiPathname.startsWith(route))
 
   const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
 

@@ -9,26 +9,15 @@ import { CourseEvaluations } from '@/components/features/courses/course-evaluati
 import { CourseQuestions } from '@/components/features/courses/course-questions'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { useApi } from '@/hooks/use-api'
+import { useCourse } from '@/hooks/use-course'
 import { useLocale } from '@/hooks/use-locale'
 import { useSyncState } from '@/hooks/use-sync-state'
-import { type Course, type Lesson, type Question, type QuestionOption } from '@/lib/api/courses/types'
-import { type Locale } from '@/lib/i18n/types'
+import { type Lesson, type Question, type QuestionOption } from '@/lib/api/courses/types'
 import { cn } from '@/lib/utils'
 
-export const CourseContent = ({
-  language,
-  lesson,
-  preview,
-  setCourse,
-  step,
-}: {
-  language: Locale
-  lesson: Lesson
-  preview: boolean
-  setCourse: (updater: (course: Course) => Course) => void
-  step: number
-}) => {
+export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: boolean }) => {
   const api = useApi()
+  const { language, setCourse, step } = useCourse()
   const { localize } = useLocale()
   const { setSyncState } = useSyncState()
 

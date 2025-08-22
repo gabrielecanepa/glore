@@ -8,7 +8,7 @@ import { type Tables } from 'supabase/types'
 
 import { client } from './config/client'
 import { course } from './config/data'
-import { pickLocales, randomLocales, verifyResponse } from './config/utils'
+import { pickLanguages, randomLanguages, verifyResponse } from './config/utils'
 
 const CREATOR_ROLES = ['admin', 'editor']
 
@@ -27,12 +27,10 @@ export const seedCourses = async ({ users }: { users?: User[] }) => {
       const creator = users
         ? pickRandom(users.filter(user => CREATOR_ROLES.includes(user.email!.split('@')[0])))
         : undefined
-      const publishedLocales = randomLocales()
-      const draftLocales = randomLocales().filter(locale => !publishedLocales.includes(locale))
-      const courseLocales = [...new Set([...publishedLocales, ...draftLocales])]
+      const languages = randomLanguages()
 
-      const title = pickLocales(skillCourse.title, courseLocales)
-      const description = pickLocales(skillCourse.description, courseLocales)
+      const title = pickLanguages(skillCourse.title, languages)
+      const description = pickLanguages(skillCourse.description, languages)
 
       const newCourse = await client
         .from('courses')
@@ -42,8 +40,7 @@ export const seedCourses = async ({ users }: { users?: User[] }) => {
           title,
           description,
           icon: skillCourse.icon,
-          published_locales: publishedLocales,
-          draft_locales: draftLocales,
+          languages,
           sort_order: courses.length + 1,
           skill_group_id: group.id,
           creator_id: creator?.id,

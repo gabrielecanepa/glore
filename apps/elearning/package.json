@@ -12,6 +12,7 @@
     "type-check": "sh scripts/type-check.sh",
     "lint": "sh scripts/lint.sh",
     "lint:fix": "sh scripts/lint.sh --fix",
+    "lint:debug": "TIMING=1 DEBUG=eslint:cli-engine sh scripts/lint.sh",
     "check": "pnpm type-check && pnpm lint",
     "analyze": "ANALYZE=true next build"
   },

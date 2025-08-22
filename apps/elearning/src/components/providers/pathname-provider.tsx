@@ -6,14 +6,14 @@ import { createContext, useState } from 'react'
 import { type Pathname } from '@/lib/navigation'
 
 interface PathnameContext {
-  pathname: Pathname
-  setPathname: React.Dispatch<React.SetStateAction<Pathname>>
+  setUiPathname: React.Dispatch<React.SetStateAction<Pathname>>
+  uiPathname: Pathname
 }
 
 export const PathnameContext = createContext<PathnameContext | null>(null)
 
 export const PathnameProvider = (props: React.PropsWithChildren) => {
-  const nextPathname = usePathname()
-  const [pathname, setPathname] = useState<Pathname>(nextPathname as Pathname)
-  return <PathnameContext.Provider value={{ pathname, setPathname }} {...props} />
+  const pathname = usePathname()
+  const [uiPathname, setUiPathname] = useState<Pathname>(pathname as Pathname)
+  return <PathnameContext.Provider value={{ uiPathname, setUiPathname }} {...props} />
 }

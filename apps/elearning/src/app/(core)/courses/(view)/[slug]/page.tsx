@@ -6,6 +6,7 @@ import { getLocale } from '@/lib/i18n/server'
 import { localize } from '@/lib/i18n/utils'
 import { intlMetadata } from '@/lib/metadata'
 import { type PageProps, type Route } from '@/lib/navigation'
+import { getCookie } from '@/lib/storage/server'
 
 const getPageData = async ({ params }: PageProps<Route.Course>) => {
   const { slug } = (await params) ?? {}
@@ -42,5 +43,7 @@ export default async (props: PageProps<Route.Course>) => {
     await api.courses.enrollUser(course.id)
   }
 
-  return <CourseView course={course} />
+  const tabs = await getCookie('course-view-tab')
+
+  return <CourseView course={course} defaultTab={tabs?.[course.slug]} />
 }

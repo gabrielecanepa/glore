@@ -61,7 +61,7 @@ init_db() {
 }
 
 sync_schema() {
-  if supabase db dump --file $SCHEMA_PATH --yes $@ >/dev/null 2>&1 && format_sql $SCHEMA_PATH; then
+  if supabase db dump --schema $SCHEMA --file $SCHEMA_PATH --yes $@ >/dev/null 2>&1 && format_sql $SCHEMA_PATH; then
     echo "Finished schema update."
   fi
 }
@@ -85,10 +85,10 @@ run_seeds() {
 
 dump_db() {
   if [ "$1" = --dry-run ]; then
-    supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA
+    supabase db diff --db-url "$SUPABASE_DB_URL" --schema $PUBLIC_SCHEMA
     return $?
   fi
-  supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA --file "$1"
+  supabase db diff --db-url "$SUPABASE_DB_URL" --schema $PUBLIC_SCHEMA --file "$1"
   format_sql $MIGRATIONS_PATH/*_"$1".sql
   sync_schema --local
   sync_types
@@ -97,9 +97,6 @@ dump_db() {
 pull_db() {
   if supabase db pull "$1" --linked --schema $PUBLIC_SCHEMA --yes; then
     format_sql $MIGRATIONS_PATH/*_"$1".sql
-    if supabase db pull "$1" --linked --schema $PROTECTED_SCHEMA --yes; then
-      format_sql $MIGRATIONS_PATH/*_"$1"_protected.sql
-    fi
     sync_db --linked
   fi
 }
@@ -120,7 +117,7 @@ case $cmd in
     eval "${cmd}_db $2"
     ;;
   migrate)
-    supabase migration up --schema $SCHEMA
+    supabase migration up --schema $PUBLIC_SCHEMA
     ;;
   prepare)
     init_db

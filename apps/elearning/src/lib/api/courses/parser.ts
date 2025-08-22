@@ -6,13 +6,10 @@ import { LOCALE_ITEMS } from '@/lib/i18n/config'
 import { type courseQuery, type lessonQuery } from './queries'
 import { CourseStatus, LessonType, type Course, type Lesson } from './types'
 
-const parseCourseStatus = ({
-  archivedAt,
-  publishedLocales,
-}: SelectData<'courses', typeof courseQuery>): CourseStatus => {
+const parseCourseStatus = ({ archivedAt, languages }: SelectData<'courses', typeof courseQuery>) => {
   if (archivedAt) return CourseStatus.Archived
-  if (!publishedLocales || publishedLocales.length === 0) return CourseStatus.Draft
-  if (publishedLocales.length < LOCALE_ITEMS.length) return CourseStatus.Partial
+  if (languages.length === 0) return CourseStatus.Draft
+  if (languages.length < LOCALE_ITEMS.length) return CourseStatus.Partial
   return CourseStatus.Published
 }
 

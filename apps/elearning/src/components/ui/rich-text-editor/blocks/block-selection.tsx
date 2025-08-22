@@ -5,20 +5,17 @@ import { useBlockSelected } from '@platejs/selection/react'
 import { cva } from 'class-variance-authority'
 import { usePluginOption, type PlateElementProps } from 'platejs/react'
 
-export const blockSelectionVariants = cva(
-  'pointer-events-none absolute inset-0 z-1 bg-foreground/5 transition-opacity',
-  {
-    defaultVariants: {
-      active: true,
-    },
-    variants: {
-      active: {
-        false: 'opacity-0',
-        true: 'opacity-100',
-      },
+export const blockSelectionVariants = cva('pointer-events-none absolute inset-0 z-1 bg-brand/5 transition-opacity', {
+  defaultVariants: {
+    active: true,
+  },
+  variants: {
+    active: {
+      false: 'opacity-0',
+      true: 'opacity-100',
     },
   },
-)
+})
 
 export const BlockSelection = (props: PlateElementProps) => {
   const isBlockSelected = useBlockSelected() as boolean

@@ -8,7 +8,7 @@ import { getLocale } from '@/lib/i18n/server'
 
 import { parseCourse } from './parser'
 import { courseQuery } from './queries'
-import type { Course } from './types'
+import type { Course, CourseCreate, CourseUpdate } from './types'
 
 export const listCourses = async (db: DatabaseClient): Promise<Course[]> => {
   const { data, error } = await db.from('courses').select(courseQuery)
@@ -21,6 +21,25 @@ export const listCourses = async (db: DatabaseClient): Promise<Course[]> => {
 
 export const findCourse = async (db: DatabaseClient, slug: string): Promise<Course> => {
   const { data, error } = await db.from('courses').select(courseQuery).eq('slug', slug).single()
+
+  if (error) throw error
+  if (!data) throw new DatabaseError('NO_RESULTS')
+
+  return parseCourse(data)
+}
+
+export const createCourse = async (db: DatabaseClient, course: CourseCreate): Promise<Course> => {
+  const { data, error } = await db.from('courses').insert(course).select(courseQuery).single()
+
+  if (error) throw error
+  if (!data) throw new DatabaseError('NO_RESULTS')
+
+  return parseCourse(data)
+}
+
+export const updateCourse = async (db: DatabaseClient, course: CourseUpdate): Promise<Course> => {
+  const { id, ...updates } = course
+  const { data, error } = await db.from('courses').update(updates).eq('id', id).select(courseQuery).single()
 
   if (error) throw error
   if (!data) throw new DatabaseError('NO_RESULTS')
@@ -110,6 +129,8 @@ export const submitAssessment = async (db: DatabaseClient, id: number, value: nu
 export default {
   list: listCourses,
   find: findCourse,
+  create: createCourse,
+  update: updateCourse,
   enrollUser,
   completeLesson,
   submitAnswers,

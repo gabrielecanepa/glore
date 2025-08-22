@@ -7,7 +7,7 @@ import confetti from 'canvas-confetti'
 import { usePathname } from '@/hooks/use-pathname'
 
 export default () => {
-  const { setPathname } = usePathname()
+  const { setUiPathname } = usePathname()
 
   const fireConfetti = useCallback(
     async () =>
@@ -22,8 +22,8 @@ export default () => {
 
   useEffect(() => {
     void fireConfetti()
-    setPathname('/')
-  }, [fireConfetti, setPathname])
+    setUiPathname('/')
+  }, [fireConfetti, setUiPathname])
 
   return <>{'Welcome!'}</>
 }

@@ -3,8 +3,8 @@
 import { createContext, useState } from 'react'
 
 interface SyncStateContext {
-  syncState: 'syncing' | 'error' | 'complete'
   setSyncState: (state: 'syncing' | 'error' | 'complete') => void
+  syncState: 'syncing' | 'error' | 'complete'
 }
 
 export const SyncStateContext = createContext<SyncStateContext | null>(null)

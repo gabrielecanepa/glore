@@ -5,8 +5,8 @@ import { createContext, useState } from 'react'
 interface HeaderContext {
   header?: React.JSX.Element
   setHeader: (breadcrumb?: React.JSX.Element) => void
-  shadow?: boolean
   setShadow: (value: boolean) => void
+  shadow?: boolean
 }
 
 export const HeaderContext = createContext<HeaderContext | null>(null)

@@ -6,8 +6,8 @@ import { DynamicIcon as LucideDynamic, type IconName } from 'lucide-react/dynami
 import { cn } from '@/lib/utils'
 
 export interface DynamicIconProps extends LucideProps {
-  name: IconName
   fallback?: () => JSX.Element
+  name: IconName
   placeholder?: React.ComponentType<React.HTMLAttributes<HTMLElement>>
   placeholderProps?: React.HTMLAttributes<HTMLElement>
 }

@@ -5,24 +5,15 @@ import { useCallback, useMemo } from 'react'
 import { ArcherContainer, ArcherElement } from 'react-archer'
 import { type RelationType } from 'react-archer/lib/types'
 
+import { useCourse } from '@/hooks/use-course'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/courses/types'
-import { type IntlRecord, type Locale } from '@/lib/i18n/types'
+import { type IntlRecord } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 
-export const CourseSidebar = ({
-  course,
-  language,
-  setStep,
-  step,
-}: {
-  course: Partial<Course>
-  language: Locale
-  setStep: (value: number) => void
-  step: number
-}) => {
+export const CourseSidebar = () => {
+  const { course, language, setStep, step } = useCourse()
   const { localize } = useLocale()
   const { user } = useSession()
   const t = useTranslations('Courses')
@@ -51,13 +42,7 @@ export const CourseSidebar = ({
     [localize, language, t],
   )
 
-  const formatLessonType = useCallback(
-    (type: string) =>
-      t('lessonType', {
-        type,
-      }),
-    [t],
-  )
+  const formatLessonType = useCallback((type: string) => t('lessonType', { type }), [t])
 
   const formatLessonMessage = useCallback(
     (index: number) => {

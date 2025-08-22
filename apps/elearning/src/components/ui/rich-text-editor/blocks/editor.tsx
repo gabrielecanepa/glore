@@ -34,7 +34,11 @@ export const Editor = ({ className, disabled, focused, variant, ...props }: Edit
 
   return (
     <PlateContent
-      className={cn(editorVariants({ disabled, focused, variant }), readOnly && 'rounded-lg', className)}
+      className={cn(
+        editorVariants({ disabled, focused, variant }),
+        readOnly && 'rounded-lg border-transparent pt-2',
+        className,
+      )}
       disabled={disabled}
       disableDefaultStyles
       {...props}

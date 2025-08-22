@@ -18,13 +18,14 @@
   "css.format.spaceAroundSelectorSeparator": true,
   "css.lint.duplicateProperties": "error",
   "editor.tabSize": 2,
+  "eslint.codeActionsOnSave.mode": "problems",
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
   "eslint.useFlatConfig": true,
   "eslint.validate": ["typescript", "typescriptreact"],
   "eslint.workingDirectories": [
     {
-      "mode": "auto"
+      "pattern": "./packages/*/"
     }
   ],
   "files.associations": {

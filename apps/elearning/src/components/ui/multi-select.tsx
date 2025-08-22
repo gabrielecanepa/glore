@@ -18,11 +18,11 @@ import {
 } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
 export interface MultiSelectProps extends PopoverProps {
-  /** @default true */
   capitalize?: boolean
   contentProps?: PopoverContentProps
   disabled?: boolean
@@ -96,7 +96,7 @@ const MultiSelectBadge = ({
     () => (
       <Badge
         asChild
-        className={cn('group px-1.5 py-0', disabled ? 'cursor-not-allowed' : 'cursor-pointer', className)}
+        className={cn('group h-5.5 px-1.5 py-0', disabled ? 'cursor-not-allowed' : 'cursor-pointer', className)}
         key={item}
         onClick={onClick}
         onKeyDown={onKeyDown}
@@ -105,8 +105,8 @@ const MultiSelectBadge = ({
         title={title}
         {...props}
       >
-        <div className="flex items-center justify-between gap-1">
-          {icon && <span className="text-sm">{icon}</span>}
+        <div className="flex items-center justify-between gap-0.5">
+          {icon && <span className="text-base">{icon}</span>}
           <span
             className={cn(
               'translate-x-[3px] rounded-full p-[1.5px] transition-all',
@@ -136,7 +136,7 @@ const MultiSelectBadge = ({
 }
 
 export const MultiSelect = ({
-  capitalize = true,
+  capitalize,
   className,
   contentProps,
   disabled = false,
@@ -150,6 +150,7 @@ export const MultiSelect = ({
   value,
   ...props
 }: MultiSelectProps) => {
+  const { isTitleCase } = useLocale()
   const tCommon = useTranslations('Common')
   const tLanguages = useTranslations('Languages')
   const [open, setOpen] = useState(false)
@@ -163,6 +164,11 @@ export const MultiSelect = ({
   const options = useMemo(
     () => (props.options ?? []).map(({ label, ...opt }) => ({ ...opt, label: tLanguages.flat(opt.value) ?? label })),
     [props.options, tLanguages],
+  )
+
+  const shouldCapitalize = useMemo(
+    () => (capitalize === undefined ? isTitleCase() : capitalize),
+    [capitalize, isTitleCase],
   )
 
   const canUnselect = useMemo(() => value.length > count, [count, value.length])
@@ -179,7 +185,7 @@ export const MultiSelect = ({
       if (canUnselect) return onChange(value.filter(i => i !== item))
       if (selectTime && Date.now() - selectTime < toastTimeout) return
 
-      toast[toastType](message, { duration: 2_000 })
+      toast[toastType](message, { duration: 200_000 })
       setSelectTime(Date.now())
     },
     [canUnselect, message, onChange, selectTime, toastTimeout, toastType, value],
@@ -233,7 +239,7 @@ export const MultiSelect = ({
               ) : (
                 value.map(item => (
                   <MultiSelectBadge
-                    capitalize={capitalize}
+                    capitalize={shouldCapitalize}
                     disabled={!canUnselect}
                     disabledMessage={message}
                     item={item}

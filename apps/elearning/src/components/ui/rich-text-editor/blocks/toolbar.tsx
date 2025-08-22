@@ -96,8 +96,8 @@ interface ToolbarButtonProps
   isDropdown?: boolean
   pressed?: boolean
   tooltip?: string
-  tooltipProps?: TooltipProps<'button'>
   tooltipContentProps?: React.ComponentPropsWithoutRef<typeof TooltipContent>
+  tooltipProps?: TooltipProps<'button'>
   tooltipTriggerProps?: React.ComponentPropsWithoutRef<typeof TooltipTrigger>
 }
 
@@ -178,8 +178,8 @@ export interface ToolbarSplitButtonPrimaryProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'value'>,
     VariantProps<typeof toolbarButtonVariants> {
   tooltip?: string
-  tooltipTriggerProps?: TooltipTriggerProps
   tooltipContentProps?: TooltipContentProps
+  tooltipTriggerProps?: TooltipTriggerProps
 }
 
 export const ToolbarSplitButtonPrimary = ({

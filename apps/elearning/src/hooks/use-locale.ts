@@ -33,25 +33,33 @@ export const useLocale = () => {
   )
 
   const localize = useCallback(
-    (record?: IntlRecord, locale?: Locale) => {
+    (record?: IntlRecord, locale: Locale = context.locale) => {
       if (!record) return record
-      return utils.localize(record, locale ?? context.locale)
+      return utils.localize(record, locale)
     },
     [context.locale],
   )
 
   const localizeDate = useCallback(
-    (input?: Date | string | number, type: 'short' | 'long' = 'long', locale?: Locale) => {
+    (input?: Date | string | number, type: 'short' | 'long' = 'long', locale: Locale = context.locale) => {
       if (!input) return input
-      return utils.localizeDate(input, type, locale ?? context.locale)
+      return utils.localizeDate(input, type, locale)
     },
     [context.locale],
   )
 
+  const isTitleCase = useCallback(
+    (locale: Locale = context.locale) => TITLE_CASE_LOCALES.includes(locale),
+    [context.locale],
+  )
+
   return {
-    ...context,
     /**
-     * Application locales.
+     * Current application locale.
+     */
+    locale: context.locale,
+    /**
+     * Available application locales.
      */
     locales: LOCALES,
     /**
@@ -59,20 +67,20 @@ export const useLocale = () => {
      */
     localeItems,
     /**
-     * Locales that should be displayed in title case.
+     * Sets the application locale.
      */
-    titleCaseLocales: TITLE_CASE_LOCALES,
+    setLocale: context.setLocale,
     /**
-     * Localizes a JSON object based on the provided locale.
+     * Localizes a JSON object based on the provided or current locale.
      */
     localize,
     /**
-     * Formats a date according to the provided locale.
+     * Formats a date according to the provided or current locale.
      */
     localizeDate,
     /**
-     * Checks if the provided locale should be displayed in title case.
+     * Checks if the provided or current locale should be displayed in title case.
      */
-    isTitleCase: (locale: Locale) => TITLE_CASE_LOCALES.includes(locale),
+    isTitleCase,
   }
 }
