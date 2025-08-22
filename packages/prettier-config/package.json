@@ -21,7 +21,7 @@
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit && tsup --silent",
     "lint": "prettier --check .",
-    "format": "prettier --write .",
+    "lint:fix": "prettier --write .",
     "check": "pnpm type-check && pnpm lint"
   },
   "devDependencies": {

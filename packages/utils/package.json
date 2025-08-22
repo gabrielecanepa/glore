@@ -16,7 +16,7 @@
     "dev": "tsup --watch",
     "type-check": "tsc --noEmit && tsup --silent",
     "lint": "eslint . && prettier --check .",
-    "format": "eslint --fix . && prettier --write .",
+    "lint:fix": "eslint --fix . && prettier --write .",
     "check": "pnpm type-check && pnpm lint"
   },
   "devDependencies": {

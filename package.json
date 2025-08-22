@@ -16,7 +16,7 @@
     "typegen": "turbo run typegen",
     "type-check": "pnpm root#type-check && turbo run type-check",
     "lint": "pnpm root#lint && turbo run lint",
-    "format": "pnpm root#format && turbo run format",
+    "lint:fix": "pnpm root#lint:fix && turbo run lint:fix",
     "check": "pnpm root#check && turbo run check",
     "db": "turbo run db --ui=stream --",
     "deploy:preview": "pnpm check && vercel build && vercel --prebuilt",
@@ -26,7 +26,7 @@
     "release": "dotenv release-it -- --config release.config.ts",
     "root#type-check": "tsc --noEmit",
     "root#lint": "eslint . && prettier --check . && shellcheck scripts/*.sh $(find .husky -maxdepth 1 -type f)",
-    "root#format": "eslint --fix . && prettier --write .",
+    "root#lint:fix": "eslint --fix . && prettier --write .",
     "root#check": "pnpm root#type-check && pnpm root#lint"
   },
   "devDependencies": {

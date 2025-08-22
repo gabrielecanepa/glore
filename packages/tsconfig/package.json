@@ -15,7 +15,7 @@
   "prettier": "@repo/prettier-config",
   "scripts": {
     "lint": "prettier --check .",
-    "format": "prettier --write .",
+    "lint:fix": "prettier --write .",
     "check": "pnpm lint"
   },
   "devDependencies": {
